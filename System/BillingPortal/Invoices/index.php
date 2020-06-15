@@ -8,7 +8,6 @@
 * Theme Design by: Pixelarity [Pixelarity.com]
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
-
 /** 
 * View Invoices
 */
@@ -21,7 +20,6 @@ Init(false);
 
 /* Set System */
 $CurrentSystem = "BillingPortal";
-
 $PageName = "Invoices";
 
 /* Configue Filter Options */
@@ -33,59 +31,50 @@ $PageName = "Invoices";
 		if(isset($_GET['Client']) && $_GET['Client'] != ""){
 			$ClientName = $_GET['Client'];
 		}
-
 		if($ClientName != "All"){
 			if($WHEREClause != ""){
 				$WHEREClause .= " AND ";
 			}
-			$WHEREClause .= " `ClientID` = '" . EscapeSQLEntry($ClientName) . "'";
+			$WHEREClause .= " I.`ClientID` = '" . EscapeSQLEntry($ClientName) . "'";
 		}
-
 	/* 2. Invoice Type */
 		$InvoiceType = "All";
 		if(isset($_GET['InvoiceType']) && $_GET['InvoiceType'] != ""){
 			$InvoiceType = $_GET['InvoiceType'];
 		}
-
 		if($InvoiceType != "All"){
 			if($WHEREClause != ""){
 				$WHEREClause .= " AND ";
 			}
-			$WHEREClause .= " `InvoiceType` = '" . EscapeSQLEntry($InvoiceType) . "'";
+			$WHEREClause .= " I.`InvoiceType` = '" . EscapeSQLEntry($InvoiceType) . "'";
 		}
-
 	/* 3. Invoice Status */
 		$InvoiceStatus = "All";
 		if(isset($_GET['InvoiceStatus']) && $_GET['InvoiceStatus'] != ""){
 			$InvoiceStatus = $_GET['InvoiceStatus'];
 		}
-
 		if($InvoiceStatus != "All"){
 			if($WHEREClause != ""){
 				$WHEREClause .= " AND ";
 			}
-			$WHEREClause .= " `InvoiceStatus` = '" . EscapeSQLEntry($InvoiceStatus) . "'";
+			$WHEREClause .= " I.`InvoiceStatus` = '" . EscapeSQLEntry($InvoiceStatus) . "'";
 		}
-
 	/* 4. Payment Status */
 		$PaymentStatus = "All";
 		if(isset($_GET['PaymentStatus']) && $_GET['PaymentStatus'] != ""){
 			$PaymentStatus = $_GET['PaymentStatus'];
 		}
-
 		if($PaymentStatus != "All"){
 			if($WHEREClause != ""){
 				$WHEREClause .= " AND ";
 			}
-			$WHEREClause .= " `PaymentStatus` = '" . EscapeSQLEntry($PaymentStatus) . "'";
+			$WHEREClause .= " I.`PaymentStatus` = '" . EscapeSQLEntry($PaymentStatus) . "'";
 		}
-
-/* Include Header */
+		/* Include Header */
 require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 ?>
-
 <div id="main" style="width: 95vw;">
-<!-- Content -->
+	<!-- Content -->
 	<section id="content" class="default">
 		<header class="major">
 			<h2>Invoices</h2>
@@ -158,7 +147,6 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 				</section><br><br>
 			
 			<!-- Invoices -->
-
 				<h2>Invoices</h2>
 				<?php 
 					$Query = "SELECT 
@@ -216,7 +204,6 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 								echo "<td data-label='Details'><a href='InvoiceDetails.php?ID=" . $row['InvoiceID'] . "'>View</a></td>";
 							echo "</tr>";
 						}
-
 				  	?>
 				  </tbody>
 				</table>
@@ -224,7 +211,6 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 			</div>
 			<!-- The Modal -->
 			<div id="modal" class="modal">
-
 			  <!-- Modal content -->
 			  <div class="modal-content">
 				  <div class="modal-header">
@@ -268,32 +254,26 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 	       $( "#Filter" ).slideToggle();
 	    });
 	});
-
 	// Show Modal
 		// Get the modal
 		var modal = document.getElementById("modal");
-
 		// Get the button that opens the modal
 		var open = document.getElementById("OpenModal");
-
 		// Get the <span> element that closes the modal
 		var span = document.getElementsByClassName("close")[0];
-
 		// When the user clicks on the button, open the modal
 		open.onclick = function() {
 		  modal.style.display = "block";
 		}
-
 		// When the user clicks on <span> (x), close the modal
 		span.onclick = function() {
 		  modal.style.display = "none";
 		}
-
 		// When the user clicks anywhere outside of the modal, close it
 		window.onclick = function(event) {
 		  if (event.target == modal) {
 		    modal.style.display = "none";
 		  }
 		} 
-</script>
+	</script>
 <?php require_once('../../../SystemAssets/Views/BillingPortalFooter.php');  ?>
