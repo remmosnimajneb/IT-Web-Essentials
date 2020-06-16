@@ -61,7 +61,7 @@
 	        </div>
 	        <div class="col invoice-details">
 	            <h1 class="invoice-id">INVOICE #<?php echo $Invoice["InvoiceID"]; ?></h1>
-                <div class="date">Date of Invoice: <?php echo date_format(date_create($Invoice["Date"]), "m/d/Y"); ?></div>
+                <div class="date">Date of Invoice: <?php echo date_format(date_create($Invoice["InvoiceDate"]), "m/d/Y"); ?></div>
 	        </div>
 	    </div>
 	    	<br>
@@ -196,7 +196,7 @@
 	        		?>
 				        <tr class="no-bck">
 			                <td colspan="2"></td>
-			                <td colspan="2">For Professional Services: </td>
+			                <td colspan="2">Total for Professional Services: </td>
 			                <td colspan="2">
 				                <?php 
 				                    if($Invoice["InvoiceType"] == "Flat"){
@@ -215,7 +215,7 @@
 
 			            <tr class="no-bck">
 			                <td colspan="2"></td>
-			                <td colspan="2">For Expenses: </td>
+			                <td colspan="2">Total for Expenses: </td>
 			                <td colspan="2">
 				                <?php 
 				                    echo "$" . number_format($TotalExpenses, 2);

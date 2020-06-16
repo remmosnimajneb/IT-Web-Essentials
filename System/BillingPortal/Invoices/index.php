@@ -8,6 +8,7 @@
 * Theme Design by: Pixelarity [Pixelarity.com]
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
+
 /** 
 * View Invoices
 */
@@ -23,9 +24,9 @@ $CurrentSystem = "BillingPortal";
 $PageName = "Invoices";
 
 /* Configue Filter Options */
-	
+
 	$WHEREClause = "";
-	
+
 	/* 1. Client */
 		$ClientName = "All";
 		if(isset($_GET['Client']) && $_GET['Client'] != ""){
@@ -145,7 +146,7 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 							<input type="submit" name="submit" value="Filter">
 					</form>
 				</section><br><br>
-			
+
 			<!-- Invoices -->
 				<h2>Invoices</h2>
 				<?php 
@@ -161,7 +162,7 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 									WHEN I.`PaymentStatus` = 1 THEN \"Part Paid\"
 									WHEN I.`PaymentStatus` = 2 THEN \"Paid Full\"
 								END AS PaymentStatus
-									
+
 								FROM 
 									`Invoice` AS I
 										INNER JOIN
@@ -170,7 +171,7 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 						if($WHEREClause != ""){
 							$Query .= " WHERE " . $WHEREClause;
 						}
-							$Query .= " ORDER BY I.`PaymentDate` DESC";
+							$Query .= " ORDER BY I.`InvoiceDate` DESC";
 			  		$stm = $DatabaseConnection->prepare($Query);
 					$stm->execute();
 					$records = $stm->fetchAll();
@@ -198,9 +199,15 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 								echo "<td data-label='ID'>" . $row['InvoiceID'] . "</td>";
 								echo "<td data-label='Client'>" . strtoupper($row['Slug']) . "</td>";
 								echo "<td data-label='Invoice Type'>" . $row['InvoiceType'] . "</td>";
-								echo "<td data-label='Date'>" . date("d/m/Y", strtotime($row['InvoiceDate'])) . "</td>";
+								echo "<td data-label='Date'>" . date("m/d/Y", strtotime($row['InvoiceDate'])) . "</td>";
 								echo "<td data-label='Invoice Status'>" . $row['InvoiceStatus'] . "</td>";
-								echo "<td data-label='Payment Status'>" . $row['PaymentStatus'] . "</td>";
+								echo "<td data-label='Payment Status'>";
+									if($row['PaymentStatus'] != "Paid Full"){
+										echo "<span style='color:red'>";
+									} else {
+										echo "<span style='color:green'>";
+									}
+								echo $row['PaymentStatus'] . "</span></td>";
 								echo "<td data-label='Details'><a href='InvoiceDetails.php?ID=" . $row['InvoiceID'] . "'>View</a></td>";
 							echo "</tr>";
 						}

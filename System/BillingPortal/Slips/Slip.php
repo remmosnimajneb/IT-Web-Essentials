@@ -145,7 +145,7 @@ require_once('../../../SystemAssets/Views/BillingPortalHeader.php');
 													$Users = $stm->fetchAll();
 													foreach ($Users as $User) {
 														echo "<option value=" . $User['ConsultantSlug'] . "";
-															if($Slip['Consultant'] == $User['ConsultantSlug']){
+															if( (isset($Slip['Consultant']) && $Slip['Consultant'] == $User['ConsultantSlug']) || ($_SESSION['ConsultantSlug'] == $User['ConsultantSlug']) ){
 																echo " selected='selected'";
 															}
 														echo ">" . $User['Name'] . "</option>";
