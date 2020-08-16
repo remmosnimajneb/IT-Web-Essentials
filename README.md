@@ -1,12 +1,11 @@
 # IT Web Essentials
 
-Project: IT Web Essentials
-Code Version: 2.0
-Author: Benjamin Sommer
-Company: The Berman Consulting Group - https://bermangroup.com
-GitHub: https://github.com/remmosnimajneb
-Theme Design by: Pixelarity [Pixelarity.com]
-Licensing Information: https://pixelarity.com/license
+- Project: IT Web Essentials
+- Code Version: 2.0
+- Author: Benjamin Sommer
+- Company: The Berman Consulting Group - https://bermangroup.com
+- GitHub: https://github.com/remmosnimajneb
+- Theme Design by: Pixelarity [Pixelarity.com] - Licensing Information: https://pixelarity.com/license
 
 ## Overview
 
