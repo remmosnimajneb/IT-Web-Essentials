@@ -8,18 +8,15 @@
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
 
-/*
-* Logout page
-* Destroys all Sessions
+/** 
+* Service Desk
 */
 
-// No Init System needed, we're just killing sessions
+/* Page Variables */
+$PageSecurityLevel = 1;
+$AppName = "ServiceDesk";
+$PageName = "Service Desk";
 
-$_SESSION['IsLoggedIn'] = false;
-$_SESSION['UserID'] = null;
-$_SESSION['Email'] = null;
-$_SESSION['Name'] = null;
-$_SESSION['ConsultantSlug'] = null;
-header('Location: Login.php?Message=Logout Success');
+header('Location: ../Switchboard.php');
 
-?>
+// Oops sorry sparky! This one's coming out next version! :(

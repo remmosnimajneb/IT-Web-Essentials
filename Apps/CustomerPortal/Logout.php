@@ -9,17 +9,13 @@
 ***************************************************************************************/
 
 /*
-* Logout page
-* Destroys all Sessions
+* Logout of Client Portal
 */
 
-// No Init System needed, we're just killing sessions
 
-$_SESSION['IsLoggedIn'] = false;
-$_SESSION['UserID'] = null;
-$_SESSION['Email'] = null;
-$_SESSION['Name'] = null;
-$_SESSION['ConsultantSlug'] = null;
-header('Location: Login.php?Message=Logout Success');
+$_SESSION['ClientPortal_IsLoggedIn'] = false;
+$_SESSION['ClientPortal_ClientUserID'] = null;
+$_SESSION['ClientPortal_Email'] = null;
+$_SESSION['ClientPortal_Name'] = null;
 
-?>
+header('Location: Login.php');

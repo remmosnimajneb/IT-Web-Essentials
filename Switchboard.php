@@ -9,12 +9,23 @@
 ***************************************************************************************/
 
 /*
-* Switchboard for System Setup
+* Switchboard for Systems
 */
-/* Include System Functions */
-require_once("../InitSystem.php");
 
-$PageName = "System Setup";
+/* Page Variables */
+$PageSecurityLevel = 1;
+$PageName = "Switchboard";
+
+/* Include System Functions */
+require_once("InitSystem.php");
+
+/* If User doesn't have Admin Access, just go to Apps */
+if(GetUserSecurityLevel($_SESSION['UserID']) == 1){
+	header('Location: /Apps/Switchboard.php');
+	die();
+}
+
+/* Include Header */
 require_once(SYSPATH . '/Assets/Views/Header.php');
 ?>
 <!-- Main -->
@@ -22,17 +33,18 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 	<!-- Content -->
 		<section id="content" class="default">
 			<header class="major">
-				<h2>System Setup</h2>
+				<h2>Switchboard</h2>
+				<h3>Welcome back <?php echo $_SESSION['Name']; ?></h3>
 			</header>
 			<div class="content">
 				<h3 style="text-align: center;"><?php if(isset($Message)) echo $Message; ?></h3>
 				<section style="text-align: center;">
 					<div class="row" style="justify-content: center;">
 						<div class="column">
-							<a href="Users" class="button large">Users</a>
+							<a href="Apps" class="button large">Apps</a>
 						</div>
 						<div class="column">
-							<a href="Config" class="button large">System Preferences</a>
+							<a href="System" class="button large">System Configuration</a>
 						</div>
 					</div>
 				</section>

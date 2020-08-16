@@ -1,20 +1,33 @@
 <?php
 /********************************
-* Project: IT Web Essentials 
-* Code Version: 1.0
-* Author: Benjamin Sommer
-* Company: The Berman Consulting Group - https://bermangroup.com
-* GitHub: https://github.com/remmosnimajneb
+* Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
+* Code Version: 2.0
+* Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
+* Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
 
 /*
-* Just redirect back to the Reseller Homepage
+* Index File
+* This allows us to check if the Request Path is a Jot, let's redirect to it, if not, show an error
 */
 
-require_once('UserConfig.php');
+/* Page Variables */
+$PageSecurityLevel = 0;
 
-header('Location: ' . $BrandingCompanyURL);
+/* Include System Functions */
+require_once("InitSystem.php");
 
-?>
+	/* Check if Jot */
+	$Jot = "SELECT `JotID` FROM `Jot` WHERE `JotSlug` = '" . $_GET['path'] . "'";
+	$stm = $DatabaseConnection->prepare($Jot);
+	$stm->execute();
+
+	if($stm->rowCount() > 0){
+		header('Location: /Apps/Jots/Public/' . $_GET['path']);
+		exit();
+	} 
+
+	/* Otherwise let's throw an Error */
+	header('Location: /System/Error/403.php');

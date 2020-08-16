@@ -8,18 +8,14 @@
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
 
-/*
-* Logout page
-* Destroys all Sessions
-*/
+	/* SQL Config File - Sample */
 
-// No Init System needed, we're just killing sessions
+	/*
+	* If your having issues setting the system up using the Auto Installer, run the queries in the file InstallSQL.sql and then add your credentials to MySQL below
+	*/
 
-$_SESSION['IsLoggedIn'] = false;
-$_SESSION['UserID'] = null;
-$_SESSION['Email'] = null;
-$_SESSION['Name'] = null;
-$_SESSION['ConsultantSlug'] = null;
-header('Location: Login.php?Message=Logout Success');
-
+	DEFINE( 'DB_HOST', '' );									// HostName
+	DEFINE( 'DB_NAME', '' );									// Database Name
+	DEFINE( 'DB_USER', '' );									// Database Username
+	DEFINE( 'DB_PASSWORD', '' );								// Database Password
 ?>

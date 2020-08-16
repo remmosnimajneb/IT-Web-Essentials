@@ -9,12 +9,24 @@
 ***************************************************************************************/
 
 /*
-* Switchboard for System Setup
+* Switchboard for Billing Portal
 */
-/* Include System Functions */
-require_once("../InitSystem.php");
 
-$PageName = "System Setup";
+/* Page Variables */
+$PageSecurityLevel = 1;
+$AppName = "BillingPortalUser";
+$PageName = "Billing Portal";
+
+/* Include System Functions */
+require_once("../../InitSystem.php");
+
+/* If User doesn't have Admin Access, just go to Apps */
+if(GetUserSecurityLevel($_SESSION['UserID']) == 1){
+	header('Location: /Apps/BillingPortal/Slips/');
+	die();
+}
+
+/* Get Header */
 require_once(SYSPATH . '/Assets/Views/Header.php');
 ?>
 <!-- Main -->
@@ -22,21 +34,29 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 	<!-- Content -->
 		<section id="content" class="default">
 			<header class="major">
-				<h2>System Setup</h2>
+				<h2>Billing Portal</h2>
 			</header>
 			<div class="content">
 				<h3 style="text-align: center;"><?php if(isset($Message)) echo $Message; ?></h3>
 				<section style="text-align: center;">
 					<div class="row" style="justify-content: center;">
 						<div class="column">
-							<a href="Users" class="button large">Users</a>
+							<a href="Slips" class="button large">Slips</a>
+						</div>
+					<?php if( json_decode(GetUserSysPermissions($_SESSION['UserID']), true)["BillingPortalAdmin"] == "1" ){ ?>
+						<div class="column">
+							<a href="Clients" class="button large">Clients</a>
 						</div>
 						<div class="column">
-							<a href="Config" class="button large">System Preferences</a>
+							<a href="Contacts" class="button large">Contacts</a>
 						</div>
+						<div class="column">
+							<a href="Invoices" class="button large">Invoices</a>
+						</div>
+					<?php } ?>
 					</div>
 				</section>
 			</div>
 		</section>
 	</div>
-<?php require_once(SYSPATH . '/Assets/Views/Footer.php');  ?>
+	<?php require_once(SYSPATH . '/Assets/Views/Footer.php');  ?>

@@ -8,18 +8,15 @@
 * Licensing Information: https://pixelarity.com/license
 ***************************************************************************************/
 
-/*
-* Logout page
-* Destroys all Sessions
-*/
+/* SQL Config File */
 
-// No Init System needed, we're just killing sessions
+	/* Enable or Disable using External SMTP (False will use PHP's mail()) */
+	DEFINE('USE_EXTERNAL_STMP', FALSE);
 
-$_SESSION['IsLoggedIn'] = false;
-$_SESSION['UserID'] = null;
-$_SESSION['Email'] = null;
-$_SESSION['Name'] = null;
-$_SESSION['ConsultantSlug'] = null;
-header('Location: Login.php?Message=Logout Success');
-
-?>
+	/* Config */
+	DEFINE('SMTP_Host', '');
+	DEFINE('SMTP_Auth', TRUE);
+	DEFINE('SMTP_Username', '');
+	DEFINE('SMTP_Password', '');
+	DEFINE('SMTP_Port', 0);
+	DEFINE('SMTP_SendEmailsFromAddress', ''); 
