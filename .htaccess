@@ -1,0 +1,30 @@
+##
+# HTACCESS
+##
+
+## Force Https:// - Recommended but not enforced ##
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+## Now if not a File or Directory, redirect to Index.php ##
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.php?path=$1 [NC,L,QSA]
+
+## Set Directory Index ##
+DirectoryIndex Switchboard.php index.php
+
+## Alias Apps Directory ##
+## Needs Implementing for V3!
+## RewriteEngine On
+## RewriteRule ^BillingPortal/(.*)$ Apps/BillingPortal/$1 [QSA]
+
+
+## General Error Docs ##
+Options +FollowSymLinks
+ErrorDocument 400 /System/Error/400.php
+ErrorDocument 401 /System/Error/401.php
+ErrorDocument 403 /System/Error/403.php
+ErrorDocument 404 /System/Error/404.php

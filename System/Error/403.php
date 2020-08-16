@@ -9,12 +9,13 @@
 ***************************************************************************************/
 
 /*
-* Switchboard for System Setup
+* 403 Access Denied
 */
-/* Include System Functions */
-require_once("../InitSystem.php");
 
-$PageName = "System Setup";
+/* Include System Functions */
+require_once("../../InitSystem.php");
+
+$PageName = "403 Access Denied";
 require_once(SYSPATH . '/Assets/Views/Header.php');
 ?>
 <!-- Main -->
@@ -22,20 +23,16 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 	<!-- Content -->
 		<section id="content" class="default">
 			<header class="major">
-				<h2>System Setup</h2>
+				<h2>403 Access Denied</h2>
 			</header>
-			<div class="content">
-				<h3 style="text-align: center;"><?php if(isset($Message)) echo $Message; ?></h3>
-				<section style="text-align: center;">
-					<div class="row" style="justify-content: center;">
-						<div class="column">
-							<a href="Users" class="button large">Users</a>
-						</div>
-						<div class="column">
-							<a href="Config" class="button large">System Preferences</a>
-						</div>
-					</div>
-				</section>
+			<div class="content" style="text-align: center;">
+				<?php
+					if(GetUserSecurityLevel($_SESSION['UserID']) > 0){
+						echo '<a class="button large" href="/Switchboard.php">Switchboard</a>';
+					} else {
+						echo "Please contact Support for more information";
+					}
+				?>
 			</div>
 		</section>
 	</div>

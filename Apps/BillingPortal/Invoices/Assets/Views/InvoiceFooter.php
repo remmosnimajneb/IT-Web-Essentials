@@ -9,17 +9,20 @@
 ***************************************************************************************/
 
 /*
-* Logout page
-* Destroys all Sessions
+* Invoice Footer
 */
-
-// No Init System needed, we're just killing sessions
-
-$_SESSION['IsLoggedIn'] = false;
-$_SESSION['UserID'] = null;
-$_SESSION['Email'] = null;
-$_SESSION['Name'] = null;
-$_SESSION['ConsultantSlug'] = null;
-header('Location: Login.php?Message=Logout Success');
-
-?>
+?>		        
+		        </div>
+		        <?php //<!--DO NOT DELETE THIS <div>. IT is responsible for showing footer always at the bottom--> ?>
+		        <div></div>
+		    </div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		function SendInvoice(InvoiceID){
+			if(confirm("This will send the invoice to the Client. Are you sure you want to send?")){
+				window.location.href = "SendInvoice.php?ID=" + InvoiceID;
+			}
+		}
+	</script>
+</html>

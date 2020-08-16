@@ -9,12 +9,13 @@
 ***************************************************************************************/
 
 /*
-* Switchboard for System Setup
+* 404 Error
 */
-/* Include System Functions */
-require_once("../InitSystem.php");
 
-$PageName = "System Setup";
+/* Include System Functions */
+require_once("../../InitSystem.php");
+
+$PageName = "404 Page Not Found";
 require_once(SYSPATH . '/Assets/Views/Header.php');
 ?>
 <!-- Main -->
@@ -22,20 +23,11 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 	<!-- Content -->
 		<section id="content" class="default">
 			<header class="major">
-				<h2>System Setup</h2>
+				<h2>404 Page Not Found</h2>
+				<h3>Looks like we couldn't find that!</h3>
 			</header>
-			<div class="content">
-				<h3 style="text-align: center;"><?php if(isset($Message)) echo $Message; ?></h3>
-				<section style="text-align: center;">
-					<div class="row" style="justify-content: center;">
-						<div class="column">
-							<a href="Users" class="button large">Users</a>
-						</div>
-						<div class="column">
-							<a href="Config" class="button large">System Preferences</a>
-						</div>
-					</div>
-				</section>
+			<div class="content" style="text-align: center;">
+				<a class="button large" href="/Switchboard.php">Switchboard</a>
 			</div>
 		</section>
 	</div>

@@ -1,20 +1,31 @@
 # IT Web Essentials
 
-Project: IT Web Essentials 
-Code Version: 1.0
-Author: Benjamin Sommer
-Company: The Berman Consulting Group - https://bermangroup.com
-GitHub: https://github.com/remmosnimajneb
-Theme Design by: Pixelarity [Pixelarity.com]
-Licensing Information: https://pixelarity.com/license
+- Project: IT Web Essentials
+- Code Version: 2.0
+- Author: Benjamin Sommer
+- Company: The Berman Consulting Group - https://bermangroup.com
+- GitHub: https://github.com/remmosnimajneb
+- Theme Design by: Pixelarity [Pixelarity.com] - Licensing Information: https://pixelarity.com/license
 
 ## Overview
 
-So this project is something i've been meaning to do for a while. It's a "Modular" based system to include various systems you may want for your company as an all in one system, including a Billing System, Short URL maker, Website Uptime Monitor (V2.0!), Service Desk (Support tickets, also V2.0!) among others.
+So this project is something i've been meaning to do for a while. It's a "Modular" based system to include various systems you may want for your company as an all in one system, including a Billing System, Short URL maker, Website Uptime Monitor (~~V2.0~~ - Sorry V3.0), Service Desk (Support tickets, also ~~V2.0~~ - Sorry also V3.0) among others.
 
-It's still very much in progress but I felt if I don't push now, it'll never happen, so, without further ado, I present IT Web Essentials V1.0
+### Version 2 updates!
+Version 2.0 comes with a bunch of awesome changed!
+- Various Database cleanup changes
+- Auto Installer for the program
+- Inventory, Customer Portal & Billing Portal Contacts Apps added
+- Upgraded Security/Permissions for Users
+- Better Configuration abilities
+- And other changes.....
 
-Please do be aware (not that I think it's going to happen) but this version most likely will not be upgradable (at least not easily) with the Database, I'd advise waiting until V2.0 to install this (hopefully soon) but if you really need it, install it and maybe I'll send upgrade instructions.
+### Version 3.0 Upgrades to come
+1. Service Desk
+2. Website Uptime Monitor
+
+PSA: I'm too lazy to write actual documentation for this thing, so if you actual use this and need help - Let me know!
+
 
 ## Req's
 1. Apache Web Server with PHP V 7.0+
@@ -23,9 +34,6 @@ Please do be aware (not that I think it's going to happen) but this version most
 
 ## Installation
 
-1. Install SQLINSTALL.sql
-2. Configure UserConfig.php (only required thing is the Database connection, otherwise can leave blank)
-3. That's it
-(V2.0 should have an installer built in)
-
-Ok stay tuned for V2.0!
+1. Create a new SQL Database
+2. Dump files into a directory (meant to be used as a root directory, you can run into issues running this in a subdirectory)
+3. Navigate to yoursite.tld and you'll automatically get the Auto Installer
