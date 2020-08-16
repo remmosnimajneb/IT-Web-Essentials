@@ -19,4 +19,5 @@
 	DEFINE('SMTP_Username', '');
 	DEFINE('SMTP_Password', '');
 	DEFINE('SMTP_Port', 0);
+	DEFINE('SMTP_Security', 'tls');
 	DEFINE('SMTP_SendEmailsFromAddress', ''); 
