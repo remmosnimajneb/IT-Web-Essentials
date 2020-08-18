@@ -75,7 +75,7 @@
 	        			$TotalExpenses = 0;
 
 	        			/* Slips */
-		        			$Slips = "SELECT * FROM `Slip` WHERE `TSType` = 'TS' AND `SlipStatus` != 'DNB' AND `InvoiceID` = " . $Invoice["InvoiceID"];
+		        			$Slips = "SELECT * FROM `Slip` WHERE `TSType` = 'TS' AND `SlipStatus` != 'DNB' AND `InvoiceID` = '" . $Invoice["InvoiceID"] . "' ORDER BY `StartDate` ASC";
 		        			$stm = $DatabaseConnection->prepare($Slips);
 	    					$stm->execute();
 	    					$Slips = $stm->fetchAll();
@@ -136,7 +136,7 @@
 
     			<?php
     				/* Expenses */
-    					$Slips = "SELECT * FROM `Slip` WHERE `TSType` = 'Expense' AND `SlipStatus` != 'DNB' AND `InvoiceID` = " . $Invoice["InvoiceID"];
+    					$Slips = "SELECT * FROM `Slip` WHERE `TSType` = 'Expense' AND `SlipStatus` != 'DNB' AND `InvoiceID` = '" . $Invoice["InvoiceID"] . "' ORDER BY `StartDate` ASC";
 	        			$stm = $DatabaseConnection->prepare($Slips);
     					$stm->execute();
     					$Slips = $stm->fetchAll();
