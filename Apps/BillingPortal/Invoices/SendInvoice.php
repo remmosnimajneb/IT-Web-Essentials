@@ -336,10 +336,9 @@ require 'Assets/PHPMailer/src/SMTP.php';
 
 		/* Now Send Email */
 		if(USE_EXTERNAL_STMP == 1){
-			echo "using ext";
 			try{
 				$mail = new PHPMailer();
-				$mail->SMTPDebug = 2;                       
+				$mail->SMTPDebug = 0;                       
 				$mail->isSMTP();                            
 				$mail->Host = SMTP_Host;                       
 				$mail->SMTPAuth = SMTP_Auth;

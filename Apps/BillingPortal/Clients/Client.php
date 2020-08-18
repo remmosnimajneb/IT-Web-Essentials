@@ -30,7 +30,7 @@ if(isset($_POST['Action'])){
 				$stm->execute();
 				$Message = "Client " . $_POST['ClientName'] . "</a> Deleted";
 			} else {
-				$sql = "UPDATE `Clients` SET `ClientName` = '" . EscapeSQLEntry($_POST['ClientName']) . "', `StreetName` = '" . EscapeSQLEntry($_POST['StreetName']) . "', `City` = '" . EscapeSQLEntry($_POST['City']) . "', `State` = '" . EscapeSQLEntry($_POST['State']) . "', `ZIP` = '" . EscapeSQLEntry($_POST['ZIP']) . "', `Email` = '" . EscapeSQLEntry($_POST['Email']) . "', `Phone` = '" . EscapeSQLEntry($_POST['Phone']) . "', `FlatRate` = '" . EscapeSQLEntry($_POST['FlatRate']) . "', `HourlyDefaultRate` = '" . EscapeSQLEntry($_POST['HourlyDefaultRate']) . "', `Notes` = '" . EscapeSQLEntry($_POST['Notes']) . "' WHERE `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "'";
+				$sql = "UPDATE `Client` SET `ClientName` = '" . EscapeSQLEntry($_POST['ClientName']) . "', `StreetName` = '" . EscapeSQLEntry($_POST['StreetName']) . "', `City` = '" . EscapeSQLEntry($_POST['City']) . "', `State` = '" . EscapeSQLEntry($_POST['State']) . "', `ZIP` = '" . EscapeSQLEntry($_POST['ZIP']) . "', `Email` = '" . EscapeSQLEntry($_POST['Email']) . "', `Phone` = '" . EscapeSQLEntry($_POST['Phone']) . "', `FlatRate` = '" . EscapeSQLEntry($_POST['FlatRate']) . "', `HourlyDefaultRate` = '" . EscapeSQLEntry($_POST['HourlyDefaultRate']) . "', `Notes` = '" . EscapeSQLEntry($_POST['Notes']) . "' WHERE `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "'";
 				$stm = $DatabaseConnection->prepare($sql);
 				$stm->execute();
 				$Message = "Client <a href='Client.php?Client=" . $_POST['Client'] . "' style='font-decoration:none;color:orange;'>" . $_POST['ClientName'] . "</a> Edited Successfully!";

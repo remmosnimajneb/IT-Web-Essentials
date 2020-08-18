@@ -33,56 +33,66 @@ if(isset($_REQUEST['Action'])){
 	/* Update Invoice */
 	if($_REQUEST['Action'] == "Edit"){
 
-		/* Check if Invoice is Unlocked or Locked */
-		$InvoiceStatus = "SELECT `InvoiceStatus` FROM `Invoice` WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']);
-		$stm = $DatabaseConnection->prepare($InvoiceStatus);
-		$stm->execute();
-		$InvoiceStatus = $stm->fetchAll();
+		/* Delete Invoice */
+		if($_POST['DeleteInvoice'] == "Yes"){
+			$Query = "DELETE FROM `Invoice` WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']);
+			$stm = $DatabaseConnection->prepare($Query);
+			$stm->execute();
+			$Message = "Invoice Deleted Successfully!";
+		} else {
 
-		/* Unlocked */
-			if($InvoiceStatus[0]["InvoiceStatus"] == "0"){
-				//Make dates
-					$InvoiceDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['InvoiceDate'])));
-					$PaymentDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['PaymentDate'])));
+			/* Check if Invoice is Unlocked or Locked */
+			$InvoiceStatus = "SELECT `InvoiceStatus` FROM `Invoice` WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']);
+			$stm = $DatabaseConnection->prepare($InvoiceStatus);
+			$stm->execute();
+			$InvoiceStatus = $stm->fetchAll();
 
-				// Set Columns to Show
-				
-					$ColumnsToShow->Consultant = "0";
-					$ColumnsToShow->Description = "0";
-					$ColumnsToShow->Hours = "0";
-					$ColumnsToShow->Rate = "0";
-					$ColumnsToShow->Amount = "0";
+			/* Unlocked */
+				if($InvoiceStatus[0]["InvoiceStatus"] == "0"){
+					//Make dates
+						$InvoiceDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['InvoiceDate'])));
+						$PaymentDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['PaymentDate'])));
+
+					// Set Columns to Show
 					
-					if(in_array("Consultant", $_POST['Cols'])){
-						$ColumnsToShow->Consultant = "1";
-					}
-					if(in_array("Description", $_POST['Cols'])){
-						$ColumnsToShow->Description = "1";
-					}
-					if(in_array("Hours", $_POST['Cols'])){
-						$ColumnsToShow->Hours = "1";
-					}
-					if(in_array("Rate", $_POST['Cols'])){
-						$ColumnsToShow->Rate = "1";
-					}
-					if(in_array("Amount", $_POST['Cols'])){
-						$ColumnsToShow->Amount = "1";
-					}
+						$ColumnsToShow->Consultant = "0";
+						$ColumnsToShow->Description = "0";
+						$ColumnsToShow->Hours = "0";
+						$ColumnsToShow->Rate = "0";
+						$ColumnsToShow->Amount = "0";
+						
+						if(in_array("Consultant", $_POST['Cols'])){
+							$ColumnsToShow->Consultant = "1";
+						}
+						if(in_array("Description", $_POST['Cols'])){
+							$ColumnsToShow->Description = "1";
+						}
+						if(in_array("Hours", $_POST['Cols'])){
+							$ColumnsToShow->Hours = "1";
+						}
+						if(in_array("Rate", $_POST['Cols'])){
+							$ColumnsToShow->Rate = "1";
+						}
+						if(in_array("Amount", $_POST['Cols'])){
+							$ColumnsToShow->Amount = "1";
+						}
 
-					$ColumnsToShow = json_encode($ColumnsToShow);
+						$ColumnsToShow = json_encode($ColumnsToShow);
 
-				$UpdateInvoice = "UPDATE `Invoice` SET `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "', `InvoiceType` = '" . EscapeSQLEntry($_POST['InvoiceType']) . "', `FlatRateMonths` = '" . EscapeSQLEntry($_POST['FlatRateMonths']) . "', `InvoiceDate` = '" . $InvoiceDate . "', `ColumnsToShow` = '" . $ColumnsToShow . "', `DiscountType` = '" . EscapeSQLEntry($_POST['DiscountType']) . "',`DiscountAmount` = '" . EscapeSQLEntry($_POST['DiscountAmount']) . "',`InvoiceNotes` = '" . EscapeSQLEntry($_POST['InvoiceNotes']) . "',`PaymentStatus` = '" . EscapeSQLEntry($_POST['PaymentStatus']) . "',`PaymentAmount` = '" . EscapeSQLEntry($_POST['PaymentAmount']) . "',`PaymentDate` = '" . $PaymentDate . "',`PaymentNotes` = '" . EscapeSQLEntry($_POST['PaymentNotes']) . "',`InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "' WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']). "";
-		/* Locked */	
-			} else if($InvoiceStatus[0]["InvoiceStatus"] == "1"){
-				// Make Date
-					$PaymentDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['PaymentDate'])));
+					$UpdateInvoice = "UPDATE `Invoice` SET `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "', `InvoiceType` = '" . EscapeSQLEntry($_POST['InvoiceType']) . "', `FlatRateMonths` = '" . EscapeSQLEntry($_POST['FlatRateMonths']) . "', `InvoiceDate` = '" . $InvoiceDate . "', `ColumnsToShow` = '" . $ColumnsToShow . "', `DiscountType` = '" . EscapeSQLEntry($_POST['DiscountType']) . "',`DiscountAmount` = '" . EscapeSQLEntry($_POST['DiscountAmount']) . "',`InvoiceNotes` = '" . EscapeSQLEntry($_POST['InvoiceNotes']) . "',`PaymentStatus` = '" . EscapeSQLEntry($_POST['PaymentStatus']) . "',`PaymentAmount` = '" . EscapeSQLEntry($_POST['PaymentAmount']) . "',`PaymentDate` = '" . $PaymentDate . "',`PreviousBalance` = '" . EscapeSQLEntry($_POST['PreviousBalance']) . "',`PaymentNotes` = '" . EscapeSQLEntry($_POST['PaymentNotes']) . "',`InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "' WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']). "";
+			/* Locked */	
+				} else if($InvoiceStatus[0]["InvoiceStatus"] == "1"){
+					// Make Date
+						$PaymentDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['PaymentDate'])));
 
-				$UpdateInvoice = "UPDATE `Invoice` SET `PaymentStatus` = '" . EscapeSQLEntry($_POST['PaymentStatus']) . "',`PaymentAmount` = '" . EscapeSQLEntry($_POST['PaymentAmount']) . "',`PaymentDate` = '" . $PaymentDate . "',`PaymentNotes` = '" . EscapeSQLEntry($_POST['PaymentNotes']) . "',`InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "' WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']). "";
-			}
+					$UpdateInvoice = "UPDATE `Invoice` SET `PaymentStatus` = '" . EscapeSQLEntry($_POST['PaymentStatus']) . "',`PaymentAmount` = '" . EscapeSQLEntry($_POST['PaymentAmount']) . "',`PaymentDate` = '" . $PaymentDate . "',`PaymentNotes` = '" . EscapeSQLEntry($_POST['PaymentNotes']) . "',`InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "' WHERE `InvoiceID` = " . EscapeSQLEntry($_POST['ID']). "";
+				}
 
-				$stm = $DatabaseConnection->prepare($UpdateInvoice);
-				$stm->execute();
-				$Message = "Invoice ID # <a href='Invoice.php?ID=" . $_POST['ID'] . "' style='font-decoration:none;color:orange;'>" . $_POST['ID'] . "</a> Updated Successfully!";
+					$stm = $DatabaseConnection->prepare($UpdateInvoice);
+					$stm->execute();
+					$Message = "Invoice ID # <a href='Invoice.php?ID=" . $_POST['ID'] . "' style='font-decoration:none;color:orange;'>" . $_POST['ID'] . "</a> Updated Successfully!";
+
+		} // End Else
 
 	}
 
@@ -121,7 +131,7 @@ if(isset($_REQUEST['Action'])){
 			//Invoice Hash
 			$InvoiceHash = bin2hex(random_bytes(32));
 
-		$InsertInvoice = "INSERT INTO `Invoice` (InvoiceHash, ClientID, InvoiceType, FlatRateMonths, InvoiceDate, ColumnsToShow, DiscountType, DiscountAmount, InvoiceNotes, PaymentStatus, PaymentAmount, PaymentDate, PaymentNotes, InternalNotes) VALUES ('" . $InvoiceHash . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . EscapeSQLEntry($_POST['InvoiceType']) . "', '" . EscapeSQLEntry($_POST['FlatRateMonths']) . "', '" . $InvoiceDate . "', '" . $ColumnsToShow . "', '" . EscapeSQLEntry($_POST['DiscountType']) . "', '" . EscapeSQLEntry($_POST['DiscountAmount']) . "', '" . EscapeSQLEntry($_POST['InvoiceNotes']) . "', '" . EscapeSQLEntry($_POST['PaymentStatus']) . "', '" . EscapeSQLEntry($_POST['PaymentAmount']) . "', '" . $PaymentDate . "', '" . EscapeSQLEntry($_POST['PaymentNotes']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "')";
+		$InsertInvoice = "INSERT INTO `Invoice` (InvoiceHash, ClientID, InvoiceType, FlatRateMonths, InvoiceDate, ColumnsToShow, DiscountType, DiscountAmount, InvoiceNotes, PaymentStatus, PaymentAmount, PaymentDate, PreviousBalance, PaymentNotes, InternalNotes) VALUES ('" . $InvoiceHash . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . EscapeSQLEntry($_POST['InvoiceType']) . "', '" . EscapeSQLEntry($_POST['FlatRateMonths']) . "', '" . $InvoiceDate . "', '" . $ColumnsToShow . "', '" . EscapeSQLEntry($_POST['DiscountType']) . "', '" . EscapeSQLEntry($_POST['DiscountAmount']) . "', '" . EscapeSQLEntry($_POST['InvoiceNotes']) . "', '" . EscapeSQLEntry($_POST['PaymentStatus']) . "', '" . EscapeSQLEntry($_POST['PaymentAmount']) . "', '" . $PaymentDate . "', '" . EscapeSQLEntry($_POST['PreviousBalance']) . "', '" . EscapeSQLEntry($_POST['PaymentNotes']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "')";
 		$stm = $DatabaseConnection->prepare($InsertInvoice);
 		$stm->execute();
 		header('Location: Build/?ID=' . $DatabaseConnection->lastInsertId());
@@ -269,6 +279,10 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 											Discount Amount (For none, enter 0): <br>
 												<input type="number" name="DiscountAmount" value="<?php echo isset($Invoice["DiscountAmount"]) ? $Invoice["DiscountAmount"]:0; ?>" min="0" step="any" style="color:black;">
 										</div>
+										<div class="column">
+											Previous Balance (For none, enter 0): <br>
+												<input type="number" name="PreviousBalance" value="<?php echo isset($Invoice["PreviousBalance"]) ? $Invoice["PreviousBalance"]:0; ?>" min="0" step="any" style="color:black;">
+										</div>
 									</div>
 									<div class="row">
 										<div class="column">
@@ -309,9 +323,23 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 										</div>
 									</div>
 										<br>
+									<?php
+										if(isset($_GET['ID']) && $_GET['ID'] != ""){
+											echo "<input type='checkbox' name='DeleteInvoice' value='Yes' id='DeleteInvoice'><label for='DeleteInvoice'>Delete Invoice?</label><br>";
+										}
+									?>
+										<br>
 						<input type="submit" name="Submit" value="Save">
 				</form>			
 		</div>
 	</section>
 </div>
+<script type="text/javascript">
+	const DeleteInvoiceBox = document.querySelector('#DeleteInvoice');
+	DeleteInvoiceBox.onclick = () => {
+        if(DeleteInvoiceBox.value == "Yes"){
+        	alert("Warning: this will delete the Invoice completely! Just make sure your deleting the right thing!");
+        }
+    };
+</script>
 <?php 	/* Get Footer */ require_once(SYSPATH . '/Assets/Views/Footer.php');  ?>

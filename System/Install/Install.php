@@ -157,7 +157,7 @@ function InArray($keySearch, $array){
 						  `InvoiceType` varchar(10) NOT NULL,
 						  `InvoiceDate` date DEFAULT NULL,
 						  `FlatRateMonths` int(3) DEFAULT NULL,
-						  `PreviousBalance` int(11) NOT NULL DEFAULT '0',
+						  `PreviousBalance` DOUBLE NULL,
 						  `DiscountType` int(1) DEFAULT NULL,
 						  `DiscountAmount` int(9) DEFAULT NULL,
 						  `ColumnsToShow` varchar(200) NOT NULL,
