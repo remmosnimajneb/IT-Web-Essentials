@@ -21,64 +21,56 @@ $PageName = "Slips";
 /* Include System Functions */
 require_once("../../../InitSystem.php");
 
-require_once(SYSPATH . '/Assets/Views/Header.php');
-
-
 /* Configue Filter Options */
-	
+
 	$WHEREClause = "";
-	
+
 	/* 1. Consultant */
 		$Consultant = $_SESSION['ConsultantSlug'];
 		if(isset($_GET['Consultant']) && $_GET['Consultant'] != ""){
 			$Consultant = $_GET['Consultant'];
 		}
-
 		if($Consultant != "All"){
-			$WHEREClause .= " AND `Consultant` = '" . EscapeSQLEntry($Consultant) . "'";
+			$WHEREClause .= " AND S.`Consultant` = '" . EscapeSQLEntry($Consultant) . "'";
 		}
-		
+
 	/* 2. Client */
 		$ClientID = "All";
 		if(isset($_GET['Client']) && $_GET['Client'] != ""){
 			$ClientID = $_GET['Client'];
 		}
-
 		if($ClientID != "All"){
-			$WHEREClause .= " AND `ClientName` = '" . EscapeSQLEntry($ClientID) . "'";
+			$WHEREClause .= " AND S.`ClientID` = '" . EscapeSQLEntry($ClientID) . "'";
 		}
-
 	/* 3. Date */
 		$Date = date('Y-m-d');
 		if(isset($_GET['Date']) && $_GET['Date'] != ""){
 			$Date = date_format(date_create(EscapeSQLEntry($_GET['Date'])), "Y-m-d");
 		}
-
-		$WHEREClause .= " AND `StartDate` = '" . EscapeSQLEntry($Date) . "'";
-
+		$WHEREClause .= " AND S.`StartDate` = '" . EscapeSQLEntry($Date) . "'";
 	/* 4. Hours */
 		$Hours = "All";
 		if(isset($_GET['Hours']) && $_GET['Hours'] != ""){
 			$Hours = $_GET['Hours'];
 		}
-
 		if($Hours != "All"){
-			$WHEREClause .= " AND `Hours` = '" . EscapeSQLEntry($Hours) . "'";
+			$WHEREClause .= " AND S.`Hours` = '" . EscapeSQLEntry($Hours) . "'";
 		}
-
 	/* 4. DNB Hours */
 		$DNBHours = "All";
 		if(isset($_GET['DNBHours']) && $_GET['DNBHours'] != ""){
 			$DNBHours = $_GET['DNBHours'];
 		}
-
 		if($DNBHours != "All"){
-			$WHEREClause .= " AND `DNB` = '" . EscapeSQLEntry($DNBHours) . "'";
+			$WHEREClause .= " AND S.`DNB` = '" . EscapeSQLEntry($DNBHours) . "'";
 		}
+
+	/* Get Header */
+	require_once(SYSPATH . '/Assets/Views/Header.php');
 
 ?>
 <div id="main" style="width: 95vw;">
-<!-- Content -->
+	<!-- Content -->
 	<section id="content" class="default">
 		<header class="major">
 			<h2>Time Slips & Expenses</h2>
@@ -135,16 +127,14 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 							<input type="submit" name="submit" value="Filter">
 					</form>
 				</section><br><br>
-			
+
 			<!-- Previous and Next Day Toggles -->
 				<div class="row">
 					<div class="column"><a href="<?php echo 'index.php?Consultant=' . $Consultant . '&Client=' . $ClientName . '&Date=' . date('Y-m-d', strtotime("-1 day", strtotime($Date))) . '&Hours=' . $Hours . '&DNBHours=' . $DNBHours; ?>"><i class="fas fa-arrow-circle-left"></i></a></div>
 					<div class="column"><h2 style="text-align: center;">Slips for: <?php echo date_format(date_create($Date), "m/d/Y"); ?></h2></div>
 				  	<div class="column"><a href="<?php echo 'index.php?Consultant=' . $Consultant . '&Client=' . $ClientName . '&Date=' . date('Y-m-d', strtotime("+1 day", strtotime($Date))) . '&Hours=' . $Hours . '&DNBHours=' . $DNBHours; ?>"><i class="fas fa-arrow-circle-right"></i></a></div>
 				</div>
-
 			<!-- Slips and Expenses -->
-
 				<h2>Time Slips</h2>
 				<?php 
 					$Query = "SELECT * FROM `Slip` AS S INNER JOIN `Client` AS C ON C.`ClientID` = S.`ClientID` WHERE `TSType` = 'TS' " . $WHEREClause . "";
@@ -183,12 +173,10 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								echo "<td data-label='Edit'><a href='Slip.php?ID=" . $row['SlipID'] . "'>Edit</a></td>";
 							echo "</tr>";
 						}
-
 				  	?>
 				  </tbody>
 				</table>
 				<?php } ?>
-
 				<h2>Expenses</h2>
 				<?php 
 					$Query = "SELECT * FROM `Slip` AS S INNER JOIN `Client` AS C ON C.`ClientID` = S.`ClientID` WHERE `TSType` = 'Expense' " . $WHEREClause . "";
@@ -228,12 +216,11 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 							echo "</tr>";
 						}
 				  	?>
-				   
+
 				  </tbody>
 				</table>
 				<?php } ?>
 			</div>
-
 	</section>
 </div>
 <script type="text/javascript">
