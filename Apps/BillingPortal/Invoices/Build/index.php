@@ -155,7 +155,7 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 		var SlipStatus = $("#SlipStatus_" + ID).val();
 		var Delete = $("#Delete_" + ID).is(":checked");
 
-		$.ajax({data: {'InvoiceID': <?php echo $_GET['ID']; ?>, 'ClientID': '<?php echo $Invoice['Slug']; ?>', 'Action': 'Edit', 'SlipStatus': SlipStatus, 'Delete': Delete, 'SlipID': ID}, type: 'POST', url: "BuildInvoiceAJAX.php", success: function(Result){
+		$.ajax({data: {'InvoiceID': <?php echo $_GET['ID']; ?>, 'ClientID': '<?php echo $Invoice['ClientID']; ?>', 'Action': 'Edit', 'SlipStatus': SlipStatus, 'Delete': Delete, 'SlipID': ID}, type: 'POST', url: "BuildInvoiceAJAX.php", success: function(Result){
 
 				/* Deleted */
 			    	if(Result.substring(0,1) == "0"){
@@ -177,7 +177,7 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 		var StartDate = $("#StartDate").val();
 		var EndDate = $("#EndDate").val();
 
-		$.ajax({data: {'InvoiceID': <?php echo $_GET['ID']; ?>, 'ClientID': '<?php echo $Invoice['Slug']; ?>', 'Action': 'AddQuestion', 'Type': AddType, 'SingleID': SingleID, 'StartDate': StartDate, 'EndDate': EndDate}, type: 'POST', url: "BuildInvoiceAJAX.php", success: function(Result){
+		$.ajax({data: {'InvoiceID': <?php echo $_GET['ID']; ?>, 'ClientID': '<?php echo $Invoice['ClientID']; ?>', 'Action': 'AddQuestion', 'Type': AddType, 'SingleID': SingleID, 'StartDate': StartDate, 'EndDate': EndDate}, type: 'POST', url: "BuildInvoiceAJAX.php", success: function(Result){
 			    // Check for Error:
 			    	if(Result.substring(0,1) == "0"){
 			    		document.getElementById("AJAXModalErrorMessage").innerHTML = Result.substring(2);

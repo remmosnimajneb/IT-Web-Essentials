@@ -95,7 +95,7 @@
 
 			// Mark as Invoice
 
-			$UpdateSlips = "UPDATE `Slip` SET `InvoiceID` = '" . EscapeSQLEntry($_POST['InvoiceID']) . "', `SlipStatus` = 'BAR' WHERE `ClientName` = '" . EscapeSQLEntry($_POST['ClientID']) . "' AND `StartDate` >= '" . EscapeSQLEntry($_POST['StartDate']) . "' AND `EndDate` <= '" . EscapeSQLEntry($_POST['EndDate']) . "' AND `InvoiceID` IS NULL";
+			$UpdateSlips = "UPDATE `Slip` SET `InvoiceID` = '" . EscapeSQLEntry($_POST['InvoiceID']) . "', `SlipStatus` = 'BAR' WHERE `ClientID` = '" . EscapeSQLEntry($_POST['ClientID']) . "' AND `StartDate` >= '" . EscapeSQLEntry($_POST['StartDate']) . "' AND `EndDate` <= '" . EscapeSQLEntry($_POST['EndDate']) . "' AND `InvoiceID` IS NULL";
 			$stm = $DatabaseConnection->prepare($UpdateSlips);
 			$stm->execute();
 

@@ -22,38 +22,32 @@ require_once("../../../InitSystem.php");
 
 /* If we are Editing or Updating */
 if(isset($_POST['Action'])){
-
 	//Make dates
 		$StartDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['StartDate'])));
 		$EndDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['EndDate'])));
-
 	/* Edit */
 	if($_POST['Action'] == "Edit"){
-
 		if($_POST['DeleteSlip'] == "Yes"){
 			$Query = "DELETE FROM `Slip` WHERE `SlipID` = " . EscapeSQLEntry($_POST['ID']);
 			$stm = $DatabaseConnection->prepare($Query);
 			$stm->execute();
 			$Message = "Slip ID # <a href='Slip.php?ID=" . EscapeSQLEntry($_POST['ID']) . "' style='font-decoration:none;color:orange;'>" . EscapeSQLEntry($_POST['ID']) . "</a> Removed.";
 		} else {
-			$Query = "UPDATE `Slip` SET `Consultant` = '" . EscapeSQLEntry($_POST['Consultant']) . "', `ClientName` = '" . EscapeSQLEntry($_POST['Client']) . "', `StartDate` = '" . $StartDate . "', `EndDate` = '" . $EndDate . "', `Hours` = '" . EscapeSQLEntry($_POST['Hours']) . "', `DNB` = '" . EscapeSQLEntry($_POST['DNB']) . "', `Description` = '" . EscapeSQLEntry($_POST['Description']) . "', `InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "', `Price` = '" . EscapeSQLEntry($_POST['Price']) . "', `Quantity` = '" . EscapeSQLEntry($_POST['Quantity']) . "' WHERE `SlipID` = '" . EscapeSQLEntry($_POST['ID']) . "'";
+			$Query = "UPDATE `Slip` SET `Consultant` = '" . EscapeSQLEntry($_POST['Consultant']) . "', `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "', `StartDate` = '" . $StartDate . "', `EndDate` = '" . $EndDate . "', `Hours` = '" . EscapeSQLEntry($_POST['Hours']) . "', `DNB` = '" . EscapeSQLEntry($_POST['DNB']) . "', `Description` = '" . EscapeSQLEntry($_POST['Description']) . "', `InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "', `Price` = '" . EscapeSQLEntry($_POST['Price']) . "', `Quantity` = '" . EscapeSQLEntry($_POST['Quantity']) . "' WHERE `SlipID` = '" . EscapeSQLEntry($_POST['ID']) . "'";
 			$stm = $DatabaseConnection->prepare($Query);
 			$stm->execute();
-
 				// Note to Self for V2.0 to add Redirect to Referrer
 			$Message = "Slip ID # <a href='Slip.php?ID=" . $_POST['ID'] . "' style='font-decoration:none;color:orange;'>" . $_POST['ID'] . "</a> Edited Successfully!";
 		}
-
 	/* Add New */
 	} else if($_POST['Action'] == "AddNew"){
-		$Query = "INSERT INTO `Slip` (TSType, Consultant, ClientName, StartDate, EndDate, Hours, DNB, Description, InternalNotes, Category, Price, Quantity) VALUES ('" . EscapeSQLEntry($_POST['TSType']) . "', '" . EscapeSQLEntry($_POST['Consultant']) . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . $StartDate . "', '" . $EndDate . "', '" . EscapeSQLEntry($_POST['Hours']) . "', '" . EscapeSQLEntry($_POST['DNB']) . "', '" . EscapeSQLEntry($_POST['Description']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "', '" . EscapeSQLEntry($_POST['Category']) . "', '" . EscapeSQLEntry($_POST['Price']) . "', '" . EscapeSQLEntry($_POST['Quantity']) . "')";
+		$Query = "INSERT INTO `Slip` (TSType, Consultant, ClientID, StartDate, EndDate, Hours, DNB, Description, InternalNotes, Category, Price, Quantity) VALUES ('" . EscapeSQLEntry($_POST['TSType']) . "', '" . EscapeSQLEntry($_POST['Consultant']) . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . $StartDate . "', '" . $EndDate . "', '" . EscapeSQLEntry($_POST['Hours']) . "', '" . EscapeSQLEntry($_POST['DNB']) . "', '" . EscapeSQLEntry($_POST['Description']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "', '" . EscapeSQLEntry($_POST['Category']) . "', '" . EscapeSQLEntry($_POST['Price']) . "', '" . EscapeSQLEntry($_POST['Quantity']) . "')";
 		$stm = $DatabaseConnection->prepare($Query);
 		$stm->execute();
-		
+
 		$Message = "Slip ID # <a href='Slip.php?ID=" . $DatabaseConnection->lastInsertId() . "' style='font-decoration:none;color:orange;'>" . $DatabaseConnection->lastInsertId() . "</a> Inserted Successfully!";
 	}
 }
-
 
 /* If editing, check the ID exists */
 if(isset($_GET['ID']) && $_GET['ID'] != ""){
@@ -63,20 +57,17 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 	$Slip = $stm->fetchAll();
 	$Slip = $Slip[0];
 	$RowCount = $stm->rowCount();
-
 	if($RowCount == 0){
 		header('Location: index.php?Error=Error - Invalid ID');
 		die();
 		exit();
 	}
 }
-
 // If it's a new Slip, set default dates to today
 if(empty($Slip["StartDate"])){
 	$Slip["StartDate"] = date("Y-m-d");
 	$Slip["EndDate"] = date("Y-m-d");
 }
-
 // If no ID is set, show TS as Default
 if(empty($Slip["TSType"])){
 	$Slip["TSType"] = "TS";
@@ -84,21 +75,18 @@ if(empty($Slip["TSType"])){
 
 /* Header */
 require_once(SYSPATH . '/Assets/Views/Header.php');
-
 ?>
-
 <div id="main" style="width: 95%;">
-<!-- Content -->
+	<!-- Content -->
 	<section id="content" class="default">
 		<header class="major">
 			<h2>Time Slips & Expenses</h2>
 		</header>
 		<div class="content">
-
 			<p style="color: orange;text-align: center;"><?php if(isset($Message)) echo $Message; ?></p>
-		
+
 				<form action="Slip.php" method="POST">
-						
+
 						<?php 
 							/* If Slip is Invoiced already, If Invoice is Sent, disallow editing */
 							if($Slip['InvoiceID'] != NULL){
@@ -114,9 +102,8 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 									echo "<h3 style='color:red;text-align:center;'>Warning! This slip is part of an invoice, editing will edit the invoice as well!</h3>
 										<p style='text-align:center;'>(If that was your intention, then that's fine)</p>";
 								}
-								
-							}
 
+							}
 							/* Adding or Editing */
 							if(isset($_GET['ID']) && $_GET['ID'] != ""){
 								echo "<h2>Slip ID: " . $_GET['ID'] . "</h2>";
@@ -126,7 +113,6 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								echo '<input type="hidden" name="Action" value="AddNew">';
 							}
 						?>
-
 						<fieldset <?php if($DisableForm) echo 'disabled="disabled"'; ?>>    
 							<!-- Standard Fields -->
 							<div class="row">
@@ -182,17 +168,14 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 											<input type="date" name="EndDate" value="<?php echo $Slip["EndDate"]; ?>">
 									</div>
 								</div>
-
 									<hr>
-
 									Slip Type: 
 										<select name="TSType" required="required" id="TSType">
 											<option value="TS" <?php if($Slip["TSType"] == "TS") echo " selected='selected'"; ?>>TS</option>
 											<option value="Expense" <?php if($Slip["TSType"] == "Expense") echo " selected='selected'"; ?>>Expense</option>
 										</select>
-								
-									<hr>
 
+									<hr>
 								<section id="TS" <?php if($Slip["TSType"] != "TS") echo "style='display:none;'"; ?>>
 									<div class="row">
 										<div class="column">
@@ -213,15 +196,13 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 										</div>						
 									</div>
 								</section>
-
 									<hr>
-
 								Description:
 									<textarea name="Description" required="required"><?php echo $Slip['Description']; ?></textarea><br>
-						
+
 								Internal Notes:
 									<input type="text" name="InternalNotes" value="<?php echo $Slip["InternalNotes"]; ?>"><br>
-						
+
 								Category:
 									<select name="Category">
 										<?php
