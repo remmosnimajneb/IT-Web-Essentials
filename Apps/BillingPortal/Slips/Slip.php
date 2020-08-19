@@ -41,7 +41,7 @@ if(isset($_POST['Action'])){
 		}
 	/* Add New */
 	} else if($_POST['Action'] == "AddNew"){
-		$Query = "INSERT INTO `Slip` (TSType, Consultant, ClientID, StartDate, EndDate, Hours, DNB, Description, InternalNotes, Category, Price, Quantity) VALUES ('" . EscapeSQLEntry($_POST['TSType']) . "', '" . EscapeSQLEntry($_POST['Consultant']) . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . $StartDate . "', '" . $EndDate . "', '" . EscapeSQLEntry($_POST['Hours']) . "', '" . EscapeSQLEntry($_POST['DNB']) . "', '" . EscapeSQLEntry($_POST['Description']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "', '" . EscapeSQLEntry($_POST['Category']) . "', '" . EscapeSQLEntry($_POST['Price']) . "', '" . EscapeSQLEntry($_POST['Quantity']) . "')";
+		$Query = "INSERT INTO `Slip` (TSType, Consultant, ClientID, StartDate, EndDate, Hours, DNB, Description, InternalNotes, Price, Quantity) VALUES ('" . EscapeSQLEntry($_POST['TSType']) . "', '" . EscapeSQLEntry($_POST['Consultant']) . "', '" . EscapeSQLEntry($_POST['Client']) . "', '" . $StartDate . "', '" . $EndDate . "', '" . EscapeSQLEntry($_POST['Hours']) . "', '" . EscapeSQLEntry($_POST['DNB']) . "', '" . EscapeSQLEntry($_POST['Description']) . "', '" . EscapeSQLEntry($_POST['InternalNotes']) . "', '" . EscapeSQLEntry($_POST['Price']) . "', '" . EscapeSQLEntry($_POST['Quantity']) . "')";
 		$stm = $DatabaseConnection->prepare($Query);
 		$stm->execute();
 
@@ -202,17 +202,6 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 
 								Internal Notes:
 									<input type="text" name="InternalNotes" value="<?php echo $Slip["InternalNotes"]; ?>"><br>
-
-								Category:
-									<select name="Category">
-										<?php
-											foreach ($slip_categories as $Cat) {
-												echo "<option value='" . $Cat . "'";
-													if($Slip['Category'] == $Cat){ echo " selected='selected'";}
-												echo ">" . $Cat . "</option>";
-											}
-										?>
-									</select><br>
 								<?php
 									if(isset($_GET['ID']) && $_GET['ID'] != ""){
 										echo "<input type='checkbox' name='DeleteSlip' value='Yes' id='DeleteSlip'><label for='DeleteSlip'>Delete Slip?</label><br>";
