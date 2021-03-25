@@ -308,7 +308,7 @@ if(isset($_GET['ID']) && $_GET['ID'] != ""){
 										</div>
 										<div class="column">
 											Payment Date: <br>
-												<input type="date" name="PaymentDate" value="<?php echo $Invoice["PaymentDate"]; ?>" style="color:black;">
+												<input type="date" name="PaymentDate" value="<?php echo date("Y-m-d", strtotime($Invoice["PaymentDate"])); ?>" style="color:black;">
 										</div>
 									</div>
 										<br>

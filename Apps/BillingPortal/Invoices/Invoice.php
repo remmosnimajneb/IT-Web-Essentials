@@ -106,7 +106,7 @@
 		    							}
 
 		    						if($Cols["Consultant"] == "1") echo "<td>" . $Slip['Consultant'] . "</td>";
-									if($Cols["Description"] == "1") echo "<td>" . $Slip['Description'] . "</td>";
+									if($Cols["Description"] == "1") echo "<td>" . htmlspecialchars_decode(stripslashes($Slip['Description'])) . "</td>";
 
 									if($Cols["Hours"] == "1"){
 										echo "<td>" . $Slip['Hours'] . "</td>";
@@ -171,7 +171,7 @@
 			    								echo "<td class='no'>" . date_format(date_create($Slip['StartDate']), "m/d/Y") . "</td>"; 
 			    							}
 
-			    						echo "<td>" . $Slip['Description'] . "</td>";
+			    						echo "<td>" . htmlspecialchars_decode(stripslashes($Slip['Description'])) . "</td>";
 			    						echo "<td>$" . $Slip['Price'] . "</td>";
 			    						echo "<td>" . $Slip['Quantity'] . "</td>";
 
