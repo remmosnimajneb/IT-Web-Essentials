@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -20,8 +20,8 @@
 		<title><?php echo GetSysConfig("SiteTitle"); ?></title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="Assets/css/main.css?version=4" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/CustomerPortal/Assets/css/main.css?version=4" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 	</head>
 	<body class="is-preload">
 

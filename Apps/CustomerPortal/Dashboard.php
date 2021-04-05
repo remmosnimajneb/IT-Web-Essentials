@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -44,12 +44,12 @@ require_once('Assets/Views/Header.php');
 		<div class="inner">
 			<header class="major special">
 				<p>Customer Portal</p>
-				<h1>Dashboard - Welcome <?php echo $_SESSION['ClientPortal_Name']; ?></h1>
+				<h1>Dashboard - Welcome back <?php echo $_SESSION['ClientPortal_Name']; ?></h1>
 				<a href="Logout.php">Logout</a>
 			</header>
 				<p style="color: orange;"><?php if(isset($Message)) echo $Message; ?></p>
 			<div class="row">
-				<div class="column">
+				<div class="column" style="flex-basis: 50%;">
 					<h3>My Info</h3>
 					Name: <?php echo $ClientUser['Name']; ?>
 						<br>
@@ -69,7 +69,18 @@ require_once('Assets/Views/Header.php');
 					<div class="column">
 						<h3>Invoices</h3>
 						<?php 
-							$Invoices = "SELECT InvoiceID,InvoiceHash,InvoiceDate, IF(`PaymentStatus` = 1, \"PAID\", \"UNPAID\") AS PaymentStatus FROM `Invoice` WHERE `InvoiceStatus` = '1' AND `ClientID` = '" . $ClientUser['ClientID'] . "' LIMIT 4";
+							$Invoices = "SELECT 
+											InvoiceID,
+											InvoiceHash,
+											InvoiceDate,
+											ComputeInvoiceTotal(InvoiceID) AS InvoiceTotal,
+											IF(`PaymentStatus` = '0', \"Unpaid\", \"Paid\") AS PaymentStatus,
+											IF(`PaymentStatus` = '0', \"red\", \"green\") AS PaymentStatusColColor 
+										FROM `Invoice` 
+											WHERE `InvoiceStatus` = '1' 
+												AND 
+											`ClientID` = '" . $ClientUser['ClientID'] . "'
+										ORDER BY `InvoiceDate` DESC";
 							$stm = $DatabaseConnection->prepare($Invoices);
 							$stm->execute();
 							$Invoices = $stm->fetchAll();
@@ -81,7 +92,8 @@ require_once('Assets/Views/Header.php');
 							  <thead>
 							    <tr>
 							      <th scope="col">Invoice ID</th>
-							      <th scope="col">Invoice Date</th>
+							      <th scope="col">Total</th>
+							      <th scope="col">Date</th>
 							      <th scope="col">Payment Status</th>
 							      <th scope="col">View</th>
 							    </tr>
@@ -89,12 +101,13 @@ require_once('Assets/Views/Header.php');
 							  <tbody>
 							  	<?php
 									foreach ($Invoices as $Invoice) {
-										echo "<tr>";
-											echo "<td data-label='Invoice ID'>" . $Invoice['InvoiceID'] . "</td>";
-											echo "<td data-label='Invoice Date'>" . $Invoice['InvoiceDate'] . "</td>";
-											echo "<td data-label='Payment Status'>" . $Invoice['PaymentStatus'] . "</td>";
-											echo "<td data-label='View'><a href='/Apps/BillingPortal/Invoices/Invoice.php?ID=" . $Invoice['InvoiceHash'] . "'>View</a></td>";
-										echo "</tr>";
+										?><tr>
+											<td data-label='Invoice ID'><?php echo $Invoice['InvoiceID']; ?></td>
+											<td data-label='Total'>$<?php echo number_format($Invoice['InvoiceTotal'], 2); ?></td>
+											<td data-label='Date'><?php echo date("m/d/Y", strtotime($Invoice['InvoiceDate'])); ?></td>
+											<td data-label='Payment Status'><span style="color:<?php echo $Invoice['PaymentStatusColColor']; ?>"><?php echo $Invoice['PaymentStatus']; ?></span></td>
+											<td data-label='View'><a href='<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Invoices/Invoice.php?ID=<?php echo $Invoice['InvoiceHash']; ?>' target='_blank'>View</a></td>
+										</tr><?php
 									}
 							  	?>
 							  </tbody>

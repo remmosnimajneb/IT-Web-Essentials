@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -21,7 +21,7 @@ require_once("InitSystem.php");
 
 /* If User doesn't have Admin Access, just go to Apps */
 if(GetUserSecurityLevel($_SESSION['UserID']) == 1){
-	header('Location: /Apps/Switchboard.php');
+	header('Location: ' . GetSysConfig("SystemURL") . '/Apps/Switchboard.php');
 	die();
 }
 
@@ -41,10 +41,10 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 				<section style="text-align: center;">
 					<div class="row" style="justify-content: center;">
 						<div class="column">
-							<a href="Apps" class="button large">Apps</a>
+							<a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps" class="button large">Apps</a>
 						</div>
 						<div class="column">
-							<a href="System" class="button large">System Configuration</a>
+							<a href="<?php echo GetSysConfig("SystemURL"); ?>/System" class="button large">System Configuration</a>
 						</div>
 					</div>
 				</section>

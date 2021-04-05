@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -20,6 +20,50 @@
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 		<style type="text/css">
 
+            /* Quote Styling */
+                .quote_alert {
+                    background-color: #3989c6;
+                    margin-left: auto;
+                    margin-right: auto;
+                    text-align: center;
+                    width: 200px;
+                    border-radius: 50px;
+                    padding: 15px;
+                }
+                .quote_alert .fa {
+                    color: white;
+                    text-align: left;
+                    font-size: 36px;
+                }
+                .quote_alert a {
+                    color: white;
+                    text-decoration: none;
+                }
+
+                .approval {
+                    margin-left: auto;
+                    margin-right: auto;
+                    text-align: center;
+                }
+
+                .button-fancy {
+                    text-transform: uppercase;
+                    border: 2px solid #3989c6;
+                    color: #3989c6;
+                    padding: 10px 40px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    transition: all 0.3s ease-in;   
+                }
+
+                .button-fancy:hover {
+                    border: 2px solid #3989c6;
+                    background: #3989c6;
+                    color: #fff;
+                    transition: all 0.3s ease-in-out;   
+                }
+
+            /* Invoice Styling */
 			#invoice{
                 padding: 30px;
             }
@@ -197,7 +241,7 @@
             <div class="toolbar hidden-print">
                 <div class="text-right">
                     <button id="printInvoice" class="btn btn-info" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
-                    <?php if($IsAdmin){ ?><button class="btn btn-info" onclick="SendInvoice(<?php echo $Invoice['InvoiceID']; ?>)"><i class="fa fa-envelope"></i> Email to Client</button>   <?php } ?>
+                    <?php if($IsAdmin){ ?><button class="btn btn-info" onclick="SentToClient(<?php echo $SendToID; ?>, <?php echo $PageName; ?>)"><i class="fa fa-envelope"></i> Email to Client</button>   <?php } ?>
                 </div>
                 <hr>
             </div>

@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -26,8 +26,8 @@
     $Invoice = "SELECT * FROM `Invoice` AS I INNER JOIN `Client` AS C ON C.`ClientID` = I.`ClientID` WHERE `InvoiceHash` = '" . EscapeSQLEntry($_GET['ID']) . "'";
     $stm = $DatabaseConnection->prepare($Invoice);
     $stm->execute();
-    $Invoice = $stm->fetchAll();
-    $Invoice = $Invoice[0];
+    $Invoice = $stm->fetchAll()[0];
+    $SendToID = $Invoice['InvoiceID'];
 
     //Now check the InvID is a reall invoice
     if($stm->rowCount() == 0){
@@ -39,14 +39,14 @@
     if(!$_SESSION['IsLoggedIn']){
     	$IsAdmin = false;
     	if($Invoice['InvoiceStatus'] == "0"){
-    		header('Location: ' . $SystemPublicURL . "/404");
+    		header('Location: ' . GetSysConfig("SystemURL") . '/404');
     		die();
     	}
     }
 
 
     /* Get Header */
-    require_once(SYSPATH . "/Apps/BillingPortal/Invoices/Assets/Views/InvoiceHeader.php");
+    require_once(SYSPATH . "/Apps/BillingPortal/Assets/Views/InvoiceHeader.php");
 
     	/* Now get the columns to print out */
     	$Cols = json_decode($Invoice["ColumnsToShow"], true);
@@ -312,4 +312,4 @@
 		        ?>
 		    </div>
 	</main>
-<?php require_once(SYSPATH ."/Apps/BillingPortal/Invoices/Assets/Views/InvoiceFooter.php"); ?>
+<?php require_once(SYSPATH ."/Apps/BillingPortal/Assets/Views/InvoiceFooter.php"); ?>

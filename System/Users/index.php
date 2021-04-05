@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -47,19 +47,27 @@ if(isset($_POST)){
 			$stm->execute();
 			$Message = "User Added!";
 		} else {
+
 			if($_POST['Password'] != $_POST['PasswordConfirm']){
 				$Message = "Error! Password doesn't match!";
 			} else {
 				$Message = "Error! Slug or Email already in use, please edit or delete exisiting User!";
 			}
+
 		}
 	} else if($_POST['Action'] == "EditUser"){
 		//B. Delete?
 			if($_POST['DeleteUser'] == "Yes"){
-				$Query = "DELETE FROM `User` WHERE `UserID` = " . EscapeSQLEntry($_POST['UserID']);
-				$stm = $DatabaseConnection->prepare($Query);
-				$stm->execute();
-				$Message = "User Removed!";
+
+				if($_POST['UserID'] == 1){
+					$Message = "Error, this user is required for System use, you cannot delete this account!";
+				} else {
+					$Query = "DELETE FROM `User` WHERE `UserID` = " . EscapeSQLEntry($_POST['UserID']);
+					$stm = $DatabaseConnection->prepare($Query);
+					$stm->execute();
+					$Message = "User Removed!";
+				}
+
 			} else {
 		//C. Update User
 
@@ -205,7 +213,14 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								Notes: <textarea name="Notes"><?php echo $User['Notes']; ?></textarea><br>
 							</div>
 						</div>
-						<input type='checkbox' name='DeleteUser' value='Yes' id='Delete'><label for='Delete'>Delete User? </label>
+						<?php
+							$DisableDelete = "";
+							if($User['UserID'] == 1){
+								$DisableDelete = "disabled='disabled'";
+								?><i>This User account is reserved for System use and cannot be removed. You can rename or edit other details of this user, but you cannot delete it.</i><br><?php
+							}
+						?>
+						<input type='checkbox' name='DeleteUser' value='Yes' id='Delete' <?php echo $DisableDelete; ?>><label for='Delete'>Delete User? </label>
 							<br><br>
 						<input type="submit" name="submit" value="Edit">
 					</form>
@@ -239,7 +254,7 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 				  <tbody>
 				  	<?php
 				  		//Get all ShortLinks
-				  		$sql = "SELECT 
+				  		$Query = "SELECT 
 				  				`Name`,
 				  				`ConsultantSlug`,
 				  				`Email`,
@@ -250,17 +265,17 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 				  					WHEN `SecurityLevel` = 2 THEN 'System Administrator'
 				  				END AS `SecurityLevel`
 				  				FROM `User` ORDER BY `UserID` ASC";
-				  		$stm = $DatabaseConnection->prepare($sql);
+				  		$stm = $DatabaseConnection->prepare($Query);
 						$stm->execute();
-						$records = $stm->fetchAll();
-						foreach ($records as $row) {
+						$Users = $stm->fetchAll();
+						foreach ($Users as $User) {
 							echo "<tr>";
-								echo "<td data-label='Name'>" . ucfirst($row['Name']) . "</td>";
-								echo "<td data-label='Slug'>" . ucfirst($row['ConsultantSlug']) . "</td>";
-								echo "<td data-label='Email'>" . $row['Email'] . "</td>";
-								echo "<td data-label='Security Level'>" . $row['SecurityLevel'] . "</td>";
-								echo "<td data-label='Edit'><a href='index.php?UserID=" . $row['UserID'] . "&Action=Edit'>Edit</a></td>";
-								echo "<td data-label='Reset Password'><a href='index.php?UserID=" . $row['UserID'] . "&Action=ResetPW'>Reset</a></td>";
+								echo "<td data-label='Name'>" . ucfirst($User['Name']) . "</td>";
+								echo "<td data-label='Slug'>" . ucfirst($User['ConsultantSlug']) . "</td>";
+								echo "<td data-label='Email'>" . $User['Email'] . "</td>";
+								echo "<td data-label='Security Level'>" . $User['SecurityLevel'] . "</td>";
+								echo "<td data-label='Edit'><a href='index.php?UserID=" . $User['UserID'] . "&Action=Edit'>Edit</a></td>";
+								echo "<td data-label='Reset Password'><a href='index.php?UserID=" . $User['UserID'] . "&Action=ResetPW'>Reset</a></td>";
 							echo "</tr>";
 						}
 				  	?>

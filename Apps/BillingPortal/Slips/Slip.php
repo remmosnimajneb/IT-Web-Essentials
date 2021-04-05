@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -20,19 +20,27 @@ $PageName = "Slips";
 /* Include System Functions */
 require_once("../../../InitSystem.php");
 
+/* Vars */
+	$DisableForm = false;
+
 /* If we are Editing or Updating */
 if(isset($_POST['Action'])){
+
 	//Make dates
 		$StartDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['StartDate'])));
 		$EndDate = date('Y-m-d', strtotime(EscapeSQLEntry($_POST['EndDate'])));
+
 	/* Edit */
 	if($_POST['Action'] == "Edit"){
+
 		if($_POST['DeleteSlip'] == "Yes"){
 			$Query = "DELETE FROM `Slip` WHERE `SlipID` = " . EscapeSQLEntry($_POST['ID']);
 			$stm = $DatabaseConnection->prepare($Query);
 			$stm->execute();
 			$Message = "Slip ID # <a href='Slip.php?ID=" . EscapeSQLEntry($_POST['ID']) . "' style='font-decoration:none;color:orange;'>" . EscapeSQLEntry($_POST['ID']) . "</a> Removed.";
+
 		} else {
+
 			$Query = "UPDATE `Slip` SET `Consultant` = '" . EscapeSQLEntry($_POST['Consultant']) . "', `ClientID` = '" . EscapeSQLEntry($_POST['Client']) . "', `StartDate` = '" . $StartDate . "', `EndDate` = '" . $EndDate . "', `Hours` = '" . EscapeSQLEntry($_POST['Hours']) . "', `DNB` = '" . EscapeSQLEntry($_POST['DNB']) . "', `Description` = '" . EscapeSQLEntry($_POST['Description']) . "', `InternalNotes` = '" . EscapeSQLEntry($_POST['InternalNotes']) . "', `Price` = '" . EscapeSQLEntry($_POST['Price']) . "', `Quantity` = '" . EscapeSQLEntry($_POST['Quantity']) . "' WHERE `SlipID` = '" . EscapeSQLEntry($_POST['ID']) . "'";
 			$stm = $DatabaseConnection->prepare($Query);
 			$stm->execute();
@@ -51,13 +59,13 @@ if(isset($_POST['Action'])){
 
 /* If editing, check the ID exists */
 if(isset($_GET['ID']) && $_GET['ID'] != ""){
+
 	$Query = "SELECT * FROM `Slip` WHERE `SlipID` = " . EscapeSQLEntry($_GET['ID']);
 	$stm = $DatabaseConnection->prepare($Query);
 	$stm->execute();
-	$Slip = $stm->fetchAll();
-	$Slip = $Slip[0];
-	$RowCount = $stm->rowCount();
-	if($RowCount == 0){
+	$Slip = $stm->fetchAll()[0];
+
+	if($stm->rowCount() == 0){
 		header('Location: index.php?Error=Error - Invalid ID');
 		die();
 		exit();
@@ -119,16 +127,24 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								<div class="column">
 									Consultant: <select name="Consultant" required="required">
 												<?php 
+
+													// Defualt to current Consultant if no Slip set
+													if(!isset($Slip['SlipID'])){
+														$Slip['Consultant'] = $_SESSION['UserID'];
+													}
+
 													$UsersQuery = "SELECT 
 																	`Name`,
-													  				`ConsultantSlug`
-											  					FROM `User`";
+													  				`ConsultantSlug`,
+													  				`UserID`
+											  					FROM `User`
+											  					ORDER BY `Name` ASC";
 													$stm = $DatabaseConnection->prepare($UsersQuery);
 													$stm->execute();
 													$Users = $stm->fetchAll();
 													foreach ($Users as $User) {
-														echo "<option value=" . $User['ConsultantSlug'] . "";
-															if($Slip['Consultant'] == $User['ConsultantSlug']){
+														echo "<option value=" . $User['UserID'] . "";
+															if($Slip['Consultant'] == $User['UserID']){
 																echo " selected='selected'";
 															}
 														echo ">" . $User['Name'] . "</option>";
@@ -142,7 +158,8 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 														$ClientsQuery = "SELECT 
 																		`ClientName`,
 														  				`ClientID`
-												  					FROM `Client`";
+												  					FROM `Client`
+												  					ORDER BY `ClientName` ASC";
 														$stm = $DatabaseConnection->prepare($ClientsQuery);
 														$stm->execute();
 														$Clients = $stm->fetchAll();
@@ -171,7 +188,7 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 									<hr>
 									Slip Type: 
 										<select name="TSType" required="required" id="TSType">
-											<option value="TS" <?php if($Slip["TSType"] == "TS") echo " selected='selected'"; ?>>TS</option>
+											<option value="TS" <?php if($Slip["TSType"] == "TS") echo " selected='selected'"; ?>>Professional Service</option>
 											<option value="Expense" <?php if($Slip["TSType"] == "Expense") echo " selected='selected'"; ?>>Expense</option>
 										</select>
 

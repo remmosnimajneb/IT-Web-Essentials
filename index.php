@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -25,9 +25,9 @@ require_once("InitSystem.php");
 	$stm->execute();
 
 	if($stm->rowCount() > 0){
-		header('Location: /Apps/Jots/Public/' . $_GET['path']);
+		header('Location: ' . GetSysConfig("SystemURL") . '/Apps/Jots/Public/' . $_GET['path']);
 		exit();
 	} 
 
 	/* Otherwise let's throw an Error */
-	header('Location: /System/Error/403.php');
+	header('Location: ' . GetSysConfig("SystemURL") . '/System/Error/403.php');

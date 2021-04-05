@@ -96,7 +96,6 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								<br><input type='checkbox' id='CustomerPortalCanViewInvoices' name='CustomerPortalCanViewInvoices' value='1' <?php if(GetSysConfig("CustomerPortalCanViewInvoices") == 1){ echo " checked='checked'"; } ?>><label for='CustomerPortalCanViewInvoices'>Customers can view Invoices</label>
 								<br><input type='checkbox' id='CustomerPortalCanSubmitTickets' name='CustomerPortalCanSubmitTickets' value='1' <?php if(GetSysConfig("CustomerPortalCanSubmitTickets") == 1){ echo " checked='checked'"; } ?>><label for='CustomerPortalCanSubmitTickets'>Customer can use Service Desk</label>
 						</div>
-
 					</div>
 					<br><h3>Branding Info</h3>
 					<div class="row">

@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -9,13 +9,13 @@
 ***************************************************************************************/
 
 /** 
-* Email Invoice, Mark as Sent and then send email
+* Email Quote or Invoice, Mark as Sent and then send email
 */
 
 /* Page Variables */
     $PageSecurityLevel = 1;
     $AppName = "BillingPortalAdmin";
-    $PageName = "Send Invoice";
+    $PageName = "Send Invoice/Quote";
 
     /* Include System Functions */
     require_once("../../../InitSystem.php");
@@ -24,27 +24,57 @@
 // Include Mailer Headers
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-require 'Assets/PHPMailer/src/Exception.php';
-require 'Assets/PHPMailer/src/PHPMailer.php';
-require 'Assets/PHPMailer/src/SMTP.php';
+require SYSPATH . 'Apps/BillingPortal/Assets/PHPMailer/src/Exception.php';
+require SYSPATH . 'Apps/BillingPortal/Assets/PHPMailer/src/PHPMailer.php';
+require SYSPATH . 'Apps/BillingPortal/Assets/PHPMailer/src/SMTP.php';
 
-	/* Check it's a real Invoice */
-    $Invoice = "SELECT * FROM `Invoice` AS I INNER JOIN `Client` AS C ON C.`ClientID` = I.`ClientID` WHERE `InvoiceID` = '" . EscapeSQLEntry($_GET['ID']) . "'";
-    $stm = $DatabaseConnection->prepare($Invoice);
-    $stm->execute();
-    $Invoice = $stm->fetchAll();
-    $Invoice = $Invoice[0];
+
+	/* Get the Quote or Invoice */
+		$EmailLink = "";
+		$EmailSubject = "";
+		$EmailHeaderMessage = "";
+		$EmailFooterAddress = "";
+		if($_GET['Type'] == "Quote"){
+
+			$Quote = "SELECT * FROM `Quote` AS Q INNER JOIN `Client` AS C ON C.`ClientID` = Q.`ClientID` WHERE `QuoteID` = '" . EscapeSQLEntry($_GET['ID']) . "'";
+		    $stm = $DatabaseConnection->prepare($Quote);
+		    $stm->execute();
+		    $Quote = $stm->fetchAll()[0];
+
+		    $EmailLink = GetSysConfig("SystemURL") . "/Apps/BillingPortal/Quotes/Quote.php?ID=" . $Quote['Hash'];
+			$EmailHeaderMessage = "For your convenience, your Quote is ready for viewing. You can approve the quote directly from the link. If you need adjustments made to the Quote, reach out to us directly for more help.";
+			$EmailHeaderMessage = "Your Quote";
+			$EmailFooterAddress = GetSysConfig("BrandingSupportEmail");
+
+		} else if($_GET['Type'] == "Invoice"){
+
+		    $Invoice = "SELECT * FROM `Invoice` AS I INNER JOIN `Client` AS C ON C.`ClientID` = I.`ClientID` WHERE `InvoiceID` = '" . EscapeSQLEntry($_GET['ID']) . "'";
+		    $stm = $DatabaseConnection->prepare($Invoice);
+		    $stm->execute();
+		    $Invoice = $stm->fetchAll()[0];
+
+		    $EmailLink = GetSysConfig("SystemURL") . "/Apps/BillingPortal/Invoices/Invoice.php?ID=" . $Invoice['InvoiceHash'];
+			$EmailSubject = "Your Bill";
+			$EmailHeaderMessage = "For your convenience, your bill, invoice number " . EscapeSQLEntry($_GET['ID']) . ", is ready for viewing.";
+			$EmailFooterAddress = GetSysConfig("InvoiceEmailAddress");
+
+		}
+
+	
 
     //Now check the InvID is a reall invoice
     if($stm->rowCount() == 0){
-        header('Location: ../../../Switchboard.php');
+        header('Location: ' . GetSysConfig("SystemURL") . '/404');
         die();
     }
 
-	// Mark as Sent
-	$Query = "UPDATE `Invoice` SET `InvoiceStatus` = 1 WHERE `InvoiceID` = " . EscapeSQLEntry($_GET['ID']);
-	$stm = $DatabaseConnection->prepare($Query);
-	$stm->execute();
+		/* Mark Invoice as Sent */
+			if($_GET["Type"] == "Invoice"){
+				// Mark as Sent
+				$Query = "UPDATE `Invoice` SET `InvoiceStatus` = 1 WHERE `InvoiceID` = " . EscapeSQLEntry($_GET['ID']);
+				$stm = $DatabaseConnection->prepare($Query);
+				$stm->execute();
+			}
 
 	$EmailMessage = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 		<html style=\"width:100%;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;\">
@@ -213,7 +243,7 @@ require 'Assets/PHPMailer/src/SMTP.php';
 		                  <td width=\"600\" valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;\"> 
 		                   <table style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" role=\"presentation\"> 
 		                     <tr style=\"border-collapse:collapse;\"> 
-		                      <td class=\"es-m-txt-l\" bgcolor=\"#ffffff\" align=\"left\" style=\"Margin:0;padding-bottom:15px;padding-top:20px;padding-left:30px;padding-right:30px;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:18px;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;line-height:27px;color:#666666;\">For your convenience, your bill, invoice number " . EscapeSQLEntry($_GET['ID']) . ", is ready for viewing.</p></td> 
+		                      <td class=\"es-m-txt-l\" bgcolor=\"#ffffff\" align=\"left\" style=\"Margin:0;padding-bottom:15px;padding-top:20px;padding-left:30px;padding-right:30px;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:18px;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;line-height:27px;color:#666666;\">" . $EmailHeaderMessage . "</p></td> 
 		                     </tr> 
 		                   </table></td> 
 		                 </tr> 
@@ -226,7 +256,7 @@ require 'Assets/PHPMailer/src/SMTP.php';
 		                  <td width=\"540\" valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;\"> 
 		                   <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\" style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;\"> 
 		                     <tr style=\"border-collapse:collapse;\"> 
-		                      <td align=\"center\" style=\"Margin:0;padding-left:10px;padding-right:10px;padding-top:40px;padding-bottom:40px;\"><span class=\"es-button-border\" style=\"border-style:solid;border-color:#7C72DC;background:#7C72DC;border-width:1px;display:inline-block;border-radius:2px;width:auto;\"><a href=\"" . GetSysConfig("SystemURL") . "/Apps/BillingPortal/Invoices/Invoice.php?ID=" . $Invoice['InvoiceHash'] . "\" class=\"es-button\" target=\"_blank\" style=\"mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:20px;color:#FFFFFF;border-style:solid;border-color:#7C72DC;border-width:15px 25px 15px 25px;display:inline-block;background:#7C72DC;border-radius:2px;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;\">Click here to View</a></span></td> 
+		                      <td align=\"center\" style=\"Margin:0;padding-left:10px;padding-right:10px;padding-top:40px;padding-bottom:40px;\"><span class=\"es-button-border\" style=\"border-style:solid;border-color:#7C72DC;background:#7C72DC;border-width:1px;display:inline-block;border-radius:2px;width:auto;\"><a href=\"" . $EmailLink . "\" class=\"es-button\" target=\"_blank\" style=\"mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:20px;color:#FFFFFF;border-style:solid;border-color:#7C72DC;border-width:15px 25px 15px 25px;display:inline-block;background:#7C72DC;border-radius:2px;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;\">Click here to View</a></span></td> 
 		                     </tr> 
 		                   </table></td> 
 		                 </tr> 
@@ -246,13 +276,13 @@ require 'Assets/PHPMailer/src/SMTP.php';
 		                  <td width=\"600\" valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;\"> 
 		                   <table style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;border-radius:4px;background-color:#111111;\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#111111\" role=\"presentation\"> 
 		                     <tr style=\"border-collapse:collapse;\"> 
-		                      <td class=\"es-m-txt-l\" bgcolor=\"#111111\" align=\"left\" style=\"padding:0;Margin:0;padding-left:30px;padding-right:30px;padding-top:35px;\"><h2 style=\"Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#FFFFFF;\">Having questions about your bill?<br></h2></td> 
+		                      <td class=\"es-m-txt-l\" bgcolor=\"#111111\" align=\"left\" style=\"padding:0;Margin:0;padding-left:30px;padding-right:30px;padding-top:35px;\"><h2 style=\"Margin:0;line-height:29px;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#FFFFFF;\">Questions?<br></h2></td> 
 		                     </tr> 
 		                     <tr style=\"border-collapse:collapse;\"> 
 		                      <td class=\"es-m-txt-l\" align=\"left\" style=\"padding:0;Margin:0;padding-top:20px;padding-left:30px;padding-right:30px;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:18px;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;line-height:27px;color:#666666;\">We're here to help!<br></p></td> 
 		                     </tr> 
 		                     <tr style=\"border-collapse:collapse;\"> 
-		                      <td esdev-links-color=\"#7c72dc\" align=\"left\" style=\"Margin:0;padding-top:20px;padding-left:30px;padding-right:30px;padding-bottom:40px;\"><a target=\"_blank\" href=\"MailTo:" . GetSysConfig("InvoiceEmailAddress") . "\" style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;text-decoration:underline;color:#7C72DC;\">Email us at " . GetSysConfig("InvoiceEmailAddress") . "</a></td> 
+		                      <td esdev-links-color=\"#7c72dc\" align=\"left\" style=\"Margin:0;padding-top:20px;padding-left:30px;padding-right:30px;padding-bottom:40px;\"><a target=\"_blank\" href=\"MailTo:" . $EmailFooterAddress . "\" style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;font-size:18px;text-decoration:underline;color:#7C72DC;\">Email us at " . $EmailFooterAddress . "</a></td> 
 		                     </tr> 
 		                   </table></td> 
 		                 </tr> 
@@ -366,7 +396,7 @@ require 'Assets/PHPMailer/src/SMTP.php';
 				//Content
 				$mail->isHTML(true);
 
-				$mail->Subject   = 'Your Bill';
+				$mail->Subject   = $EmailSubject;
 				$mail->Body      = $EmailMessage;
 				$mail->Send();
 			} catch (Exception $e) {
@@ -391,8 +421,8 @@ require 'Assets/PHPMailer/src/SMTP.php';
 			$Headers  = 'MIME-Version: 1.0' . "\r\n";
 			$Headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 			$Headers .= "From: " . GetSysConfig('InvoiceEmailAddress') . "\r\n"."X-Mailer: PHP";
-			mail($MailTo, 'Your Bill', $EmailMessage, $Headers);
+			mail($MailTo, $EmailSubject, $EmailMessage, $Headers);
 		}
 
-	header('Location: /Apps/BillingPortal/Invoices');
+	header('Location: ' . GetSysConfig("SystemURL") . '/Apps/BillingPortal/Invoices');
 ?>

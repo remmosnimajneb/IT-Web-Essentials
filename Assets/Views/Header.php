@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -19,9 +19,9 @@
 		<title><?php echo $PageName . " | " . GetSysConfig("SiteTitle"); ?></title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="<?php echo GetSysConfig("SystemURL"); ?>/Assets/Theme/css/main.css?Version=6" />
+		<link rel="stylesheet" href="<?php echo GetSysConfig("SystemURL"); ?>/Assets/Theme/css/main.css?Version=7" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
-		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</head>
 	<body class="is-preload">
 
@@ -30,7 +30,7 @@
 
 				<!-- Header -->
 					<header id="header">
-						<h1><a href="/Switchboard.php"><?php echo GetSysConfig("SiteTitle"); ?></a></h1>
+						<h1><a href="<?php echo GetSysConfig("SystemURL"); ?>/Switchboard.php"><?php echo GetSysConfig("SiteTitle"); ?></a></h1>
 						<?php
 							if(GetUserSecurityLevel($_SESSION['UserID']) > 0){
 						?>
@@ -42,7 +42,7 @@
 						?>
 					</header>
 
-				<!-- Menu -->
+				<!-- Menu Nav -->
 					<nav id="menu">
 						<div class="inner">
 							<h2>Menu</h2>
@@ -52,38 +52,38 @@
 									$AllowedSystems = json_decode(GetUserSysPermissions($_SESSION['UserID']), true);
 									if($AppName == "BillingPortal" && $AllowedSystems["BillingPortalAdmin"] == "1"){
 										?>
-											<li><a href="/Apps/BillingPortal/Slips">Slips</a></li>
-											<li><a href="/Apps/BillingPortal/Clients">Clients</a></li>
-											<li><a href="/Apps/BillingPortal/Contacts">Contacts</a></li>											
-											<li><a href="/Apps/BillingPortal/Invoices">Invoices</a></li>
+											<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Slips">Slips</a></li>
+											<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Clients">Clients</a></li>
+											<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Contacts">Contacts</a></li>											
+											<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Invoices">Invoices</a></li>
 										<?php
 									} else {
 										if($AllowedSystems["BillingPortalUser"] == "1" || $AllowedSystems["BillingPortalAdmin"] == "1"){
 											?>
-												<li><a href="/Apps/BillingPortal">Billing Portal</a></li>
+												<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal">Billing Portal</a></li>
 											<?php
 										}
 
 										if($AllowedSystems["Jots"] == "1"){
 											?>
-												<li><a href="/Apps/Jots">Jots</a></li>
+												<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/Jots">Jots</a></li>
 											<?php
 										}
 
 										if($AllowedSystems["Inventory"] == "1"){
 											?>
-												<li><a href="/Apps/Inventory">Inventory</a></li>
+												<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/Inventory">Inventory</a></li>
 											<?php
 										}
 
 										if($AllowedSystems["ServiceDesk"] == "1"){
 											?>
-												<li><a href="/Apps/ServiceDesk">Service Desk</a></li>
+												<li><a href="<?php echo GetSysConfig("SystemURL"); ?>/Apps/ServiceDesk">Service Desk</a></li>
 											<?php
 										}
 									}
 								?>
-								<a href="/Switchboard.php">Switchboard</a> | <a href="/System/Auth/Logout.php">Logout</a>
+								<a href="<?php echo GetSysConfig("SystemURL"); ?>/Switchboard.php">Switchboard</a> | <a href="<?php echo GetSysConfig("SystemURL"); ?>/System/Auth/Logout.php">Logout</a>
 							</ul>
 						</div>
 					</nav>

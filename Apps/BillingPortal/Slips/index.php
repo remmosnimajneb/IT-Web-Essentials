@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -26,7 +26,7 @@ require_once("../../../InitSystem.php");
 	$WHEREClause = "";
 
 	/* 1. Consultant */
-		$Consultant = $_SESSION['ConsultantSlug'];
+		$Consultant = $_SESSION['UserID'];
 		if(isset($_GET['Consultant']) && $_GET['Consultant'] != ""){
 			$Consultant = $_GET['Consultant'];
 		}
@@ -88,14 +88,15 @@ require_once("../../../InitSystem.php");
 								<?php 
 									$UsersQuery = "SELECT 
 													`Name`,
-									  				`ConsultantSlug`
+									  				`ConsultantSlug`,
+									  				`UserID`
 							  					FROM `User`";
 									$stm = $DatabaseConnection->prepare($UsersQuery);
 									$stm->execute();
 									$Users = $stm->fetchAll();
 									foreach ($Users as $User) {
-										echo "<option value=" . $User['ConsultantSlug'] . "";
-											if($User['ConsultantSlug'] == $Consultant){
+										echo "<option value=" . $User['UserID'] . "";
+											if($User['UserID'] == $Consultant){
 												echo " selected='selected'";
 											}
 										echo ">" . $User['Name'] . "</option>";
@@ -137,10 +138,17 @@ require_once("../../../InitSystem.php");
 			<!-- Slips and Expenses -->
 				<h2>Time Slips</h2>
 				<?php 
-					$Query = "SELECT * FROM `Slip` AS S INNER JOIN `Client` AS C ON C.`ClientID` = S.`ClientID` WHERE `TSType` = 'TS' " . $WHEREClause . "";
+					$Query = "SELECT 
+									* 
+								FROM `Slip` AS S 
+									INNER JOIN `Client` AS C 
+										ON C.`ClientID` = S.`ClientID` 
+									INNER JOIN `User` AS U
+										ON U.`UserID` = S.`Consultant`
+								WHERE `TSType` = 'TS' " . $WHEREClause . "";
 			  		$stm = $DatabaseConnection->prepare($Query);
 					$stm->execute();
-					$records = $stm->fetchAll();
+					$Slips = $stm->fetchAll();
 					$RowCount = $stm->rowCount();
 					if($RowCount == 0){
 						echo "<h3>No Time Slips Found!</h3>";
@@ -161,16 +169,16 @@ require_once("../../../InitSystem.php");
 				  </thead>
 				  <tbody>
 				  	<?php
-						foreach ($records as $row) {
+						foreach ($Slips as $Slip) {
 							echo "<tr>";
-								echo "<td data-label='Slip ID'>" . $row['SlipID'] . "</td>";
-								echo "<td data-label='Consultant'>" . ucfirst($row['Consultant']) . "</td>";
-								echo "<td data-label='Client Name'>" . strtoupper($row['ClientName']) . "</td>";
-								echo "<td data-label='Date'>" . $row['StartDate'] . "</td>";
-								echo "<td data-label='Hours'>" . $row['Hours'] . "</td>";
-								echo "<td data-label='DNB'>" . $row['DNB'] . "</td>";
-								echo "<td data-label='Description'>" . $row['Description'] . "</td>";
-								echo "<td data-label='Edit'><a href='Slip.php?ID=" . $row['SlipID'] . "'>Edit</a></td>";
+								echo "<td data-label='Slip ID'>" . $Slip['SlipID'] . "</td>";
+								echo "<td data-label='Consultant'>" . ucfirst($Slip['Name']) . "</td>";
+								echo "<td data-label='Client Name'>" . strtoupper($Slip['ClientName']) . "</td>";
+								echo "<td data-label='Date'>" . $Slip['StartDate'] . "</td>";
+								echo "<td data-label='Hours'>" . $Slip['Hours'] . "</td>";
+								echo "<td data-label='DNB'>" . $Slip['DNB'] . "</td>";
+								echo "<td data-label='Description'>" . $Slip['Description'] . "</td>";
+								echo "<td data-label='Edit'><a href='Slip.php?ID=" . $Slip['SlipID'] . "'>Edit</a></td>";
 							echo "</tr>";
 						}
 				  	?>
@@ -179,10 +187,17 @@ require_once("../../../InitSystem.php");
 				<?php } ?>
 				<h2>Expenses</h2>
 				<?php 
-					$Query = "SELECT * FROM `Slip` AS S INNER JOIN `Client` AS C ON C.`ClientID` = S.`ClientID` WHERE `TSType` = 'Expense' " . $WHEREClause . "";
+					$Query = "SELECT 
+									* 
+								FROM `Slip` AS S 
+									INNER JOIN `Client` AS C 
+										ON C.`ClientID` = S.`ClientID` 
+									INNER JOIN `User` AS U
+										ON U.`UserID` = S.`Consultant`
+								WHERE `TSType` = 'Expense' " . $WHEREClause . "";
 			  		$stm = $DatabaseConnection->prepare($Query);
 					$stm->execute();
-					$records = $stm->fetchAll();
+					$Slips = $stm->fetchAll();
 					$RowCount = $stm->rowCount();
 					if($RowCount == 0){
 						echo "<h3>No Expenses Found!</h3>";
@@ -203,16 +218,16 @@ require_once("../../../InitSystem.php");
 				  </thead>
 				  <tbody>
 				  	<?php
-						foreach ($records as $row) {
+						foreach ($Slips as $Slip) {
 							echo "<tr>";
-								echo "<td data-label='Slip ID'>" . $row['SlipID'] . "</td>";
-								echo "<td data-label='Consultant'>" . ucfirst($row['Consultant']) . "</td>";								
-								echo "<td data-label='Client Name'>" . strtoupper($row['ClientName']) . "</td>";
-								echo "<td data-label='Date'>" . $row['StartDate'] . "</td>";
-								echo "<td data-label='Hours'>" . $row['Quantity'] . "</td>";
-								echo "<td data-label='DNB'>" . $row['Price'] . "</td>";
-								echo "<td data-label='Description'>" . $row['Description'] . "</td>";
-								echo "<td data-label='Edit'><a href='Slip.php?ID=" . $row['SlipID'] . "'>Edit</a></td>";
+								echo "<td data-label='Slip ID'>" . $Slip['SlipID'] . "</td>";
+								echo "<td data-label='Consultant'>" . ucfirst($Slip['Name']) . "</td>";								
+								echo "<td data-label='Client Name'>" . strtoupper($Slip['ClientName']) . "</td>";
+								echo "<td data-label='Date'>" . $Slip['StartDate'] . "</td>";
+								echo "<td data-label='Hours'>" . $Slip['Quantity'] . "</td>";
+								echo "<td data-label='DNB'>" . $Slip['Price'] . "</td>";
+								echo "<td data-label='Description'>" . $Slip['Description'] . "</td>";
+								echo "<td data-label='Edit'><a href='Slip.php?ID=" . $Slip['SlipID'] . "'>Edit</a></td>";
 							echo "</tr>";
 						}
 				  	?>

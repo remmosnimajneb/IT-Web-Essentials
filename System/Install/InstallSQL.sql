@@ -1,6 +1,6 @@
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -109,8 +109,8 @@ CREATE TABLE `Jot` (
 CREATE TABLE `Slip` (
   `SlipID` int(9) NOT NULL,
   `TSType` varchar(140) NOT NULL,
-  `Consultant` varchar(140) NOT NULL,
-  `ClientID` varchar(140) NOT NULL,
+  `Consultant` int(9) NOT NULL,
+  `ClientID` int(9) NOT NULL,
   `StartDate` date NOT NULL,
   `EndDate` date DEFAULT NULL,
   `Hours` varchar(140) DEFAULT NULL,
@@ -140,6 +140,39 @@ CREATE TABLE `User` (
   `SysPermissions` varchar(500) NOT NULL,
   `Notes` text
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Quote` (
+  `QuoteID` int(9) NOT NULL,
+  `Hash` varchar(32) NOT NULL,
+  `ClientID` int(9) NOT NULL,
+  `Name` varchar(300) NOT NULL,
+  `Date` date DEFAULT NULL,
+  `ExpDate` date DEFAULT NULL,
+  `LineItems` text DEFAULT NULL,
+  `Discount` double DEFAULT NULL,
+  `Fee` double DEFAULT NULL,
+  `Approved` int(1) DEFAULT NULL,
+  `QuoteStatus` int(9) DEFAULT NULL,
+  `Signature` text DEFAULT NULL,
+  `SignedName` varchar(200) DEFAULT NULL,
+  `SignedDate` date DEFAULT NULL,
+  `InvoiceID` int(9) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Subscription` (
+  `SubscriptionID` int(9) NOT NULL,
+  `SubscriptionName` varchar(200) NOT NULL,
+  `ClientID` int(9) NOT NULL,
+  `SlipType` varchar(15) DEFAULT NULL,
+  `Cost` double DEFAULT 0,
+  `Quantity` int(9) DEFAULT NULL,
+  `StartDate` date DEFAULT NULL,
+  `Frequency` varchar(30) NOT NULL,
+  `RecurrenceOn` varchar(30) NOT NULL,
+  `RecurrenceDate` date NOT NULL,
+  `LastRunDate` date DEFAULT NULL,
+  `Status` int(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `User` (`UserID`, `Name`, `ConsultantSlug`, `StreetName`, `City`, `State`, `ZIP`, `Phone`, `Fax`, `Email`, `Password`, `SecurityLevel`, `SysPermissions`, `Notes`) VALUES
 (1, 'Sys Admin', 'SysAdmin', '', '', '', '', '', '', 'admin@example.com', '$2y$10$X/2GIOgtwvy.DYG/Qs9NJeCB3HxABCv4hFuNHnFFw6WFhIVoLfsei', 2, '{\"Jots\":\"1\",\"BillingPortalUser\":\"1\",\"BillingPortalAdmin\":\"1\",\"ServiceDesk\":\"1\",\"Inventory\":\"1\",\"CustomerPortal\":\"1\"}', '');
@@ -182,6 +215,10 @@ ALTER TABLE `Slip`
 ALTER TABLE `User`
   ADD PRIMARY KEY (`UserID`),
   ADD UNIQUE KEY `UserID` (`UserID`);
+ALTER TABLE `Subscription`
+  ADD PRIMARY KEY (`SubscriptionID`);
+ALTER TABLE `Quote`
+  ADD PRIMARY KEY (`QuoteID`);
 
 ALTER TABLE `Client`
   MODIFY `ClientID` int(9) NOT NULL AUTO_INCREMENT;
@@ -194,11 +231,132 @@ ALTER TABLE `Configuration`
 ALTER TABLE `Inventory`
   MODIFY `ItemID` int(9) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `Invoice`
-  MODIFY `InvoiceID` int(9) NOT NULL AUTO_INCREMENT;
+  MODIFY `InvoiceID` int(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5000;
 ALTER TABLE `Jot`
   MODIFY `JotID` int(9) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `Slip`
   MODIFY `SlipID` int(9) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `User`
   MODIFY `UserID` int(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
+ALTER TABLE `Subscription`
+  MODIFY `SubscriptionID` int(9) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Quote`
+  MODIFY `QuoteID` int(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4000;
+
+/* Create Function */
+
+  DELIMITER $$
+CREATE FUNCTION `ComputeInvoiceTotal`(`Invoice_ID` INT(9)) RETURNS double
+    DETERMINISTIC
+BEGIN
+   
+    # End Total
+    DECLARE Total DOUBLE;
+  
+
+    # First get Invoice Vars
+  
+    DECLARE Invoice_Type VARCHAR(30);
+    DECLARE Invoice_FlatRateMonths INT;
+
+    DECLARE Inv_Discount_Type INT;
+    DECLARE Inv_Discount_Amount DOUBLE;
+    DECLARE Inv_Discount_Previous_Balance DOUBLE;
+
+    DECLARE Inv_ClientID INT;
+
+    DECLARE TotalHours INT;
+    DECLARE DNBHours INT;
+
+    DECLARE ExpenseCosts DOUBLE;
+
+    DECLARE Client_FlatRate DOUBLE;
+    DECLARE Client_HourlyRate DOUBLE;
+
+    DECLARE TotalDiscounts DOUBLE;
+
+    SELECT InvoiceType INTO Invoice_Type
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+    SELECT FlatRateMonths INTO Invoice_FlatRateMonths
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+    SELECT DIscountType INTO Inv_Discount_Type
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+    SELECT DiscountAmount INTO Inv_Discount_Amount
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+    SELECT PreviousBalance INTO Inv_Discount_Previous_Balance
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+    SELECT ClientID INTO Inv_ClientID
+        FROM Invoice
+        WHERE InvoiceID = Invoice_ID;
+
+  # Get Client Vars
+
+    SELECT FlatRate INTO Client_FlatRate
+      FROM Client
+      WHERE ClientID = Inv_ClientID;
+
+    SELECT HourlyDefaultRate INTO Client_HourlyRate
+      FROM Client
+      WHERE ClientID = Inv_ClientID;
+
+  # Finally get total Hours
+
+    SELECT SUM(Hours) INTO TotalHours
+      FROM Slip
+      WHERE InvoiceID = Invoice_ID
+        AND
+          SlipStatus = 'BAR'
+        AND 
+          TSType = 'TS';
+
+    SELECT SUM(DNB) INTO DNBHours
+      FROM Slip
+      WHERE InvoiceID = Invoice_ID
+        AND
+            SlipStatus = 'BAR'
+        AND 
+          TSType = 'TS';
+
+    SELECT SUM(Price * Quantity) INTO ExpenseCosts
+      FROM Slip
+      WHERE InvoiceID = Invoice_ID
+        AND
+            SlipStatus = 'BAR'
+        AND 
+          TSType = 'Expense';
+
+
+  # Setup Discounts
+    IF Inv_Discount_Amount > 0 THEN
+        IF Inv_Discount_Type = 1 THEN
+          SET TotalDiscounts = COALESCE(Inv_Discount_Amount, 0);
+        ELSEIF Inv_Discount_Type = 2 THEN
+            IF Invoice_Type = 'Flat' THEN
+              SET TotalDiscounts = ((COALESCE(Invoice_FlatRateMonths,0) * COALESCE(Client_FlatRate,0)) * 100) / Inv_Discount_Amount;
+            ELSEIF Invoice_Type = 'Hourly' THEN
+              SET TotalDiscounts = (((COALESCE(TotalHours,0) - COALESCE(DNBHours,0)) * COALESCE(Client_HourlyRate,0)) * 100) / Inv_Discount_Amount;
+            END IF;
+        END IF;
+    END IF;
+
+  # Get Total
+    IF Invoice_Type = 'Flat' THEN
+      SET Total = (COALESCE(Invoice_FlatRateMonths, 0) * COALESCE(Client_FlatRate, 0)) + (COALESCE(ExpenseCosts, 0)) + (COALESCE(Inv_Discount_Previous_Balance, 0)) - COALESCE(Inv_Discount_Amount, 0);
+    ELSEIF Invoice_Type = 'Hourly' THEN
+      SET Total = ((COALESCE(TotalHours,0) - COALESCE(DNBHours,0)) * COALESCE(Client_HourlyRate,0)) + (COALESCE(ExpenseCosts,0)) + (COALESCE(Inv_Discount_Previous_Balance,0))  - COALESCE(Inv_Discount_Amount, 0);
+      END IF;
+
+  RETURN Total;
+
+END$$
+DELIMITER ;

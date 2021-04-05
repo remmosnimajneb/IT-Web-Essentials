@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -99,7 +99,8 @@ require_once("../../../InitSystem.php");
 														`ClientID`, 
 														`ClientName`,
 										  				`ClientSlug`
-								  					FROM `Client`";
+								  					FROM `Client`
+								  				ORDER BY `ClientName` ASC";
 										$stm = $DatabaseConnection->prepare($ClientsQuery);
 										$stm->execute();
 										$Clients = $stm->fetchAll();
@@ -152,7 +153,9 @@ require_once("../../../InitSystem.php");
 								I.`ClientID`,
 								C.`ClientSlug`, 
 								I.`InvoiceType`, 
-								I.`InvoiceDate`, 
+								I.`InvoiceDate`,
+								C.`ClientName`,
+								ComputeInvoiceTotal(InvoiceID) AS Inv_Total,
 								IF(I.`InvoiceStatus` = 1, \"Locked\", \"Unlocked\") AS InvoiceStatus, 
 								CASE 
 									WHEN I.`PaymentStatus` = 0 THEN \"Not Paid\"
@@ -184,6 +187,7 @@ require_once("../../../InitSystem.php");
 				      <th scope="col" style="width:70px">Client</th>
 				      <th scope="col" style="width:70px">Invoice Type</th>
 				      <th scope="col" style="width:90px">Date</th>
+				      <th scope="col" style="width: 70px;">Total</th>
 				      <th scope="col" style="width:70px">Invoice Status</th>
 				      <th scope="col" style="width:70px">Payment Status</th>
 				      <th scope="col" style="width:90px">Details</th>
@@ -194,9 +198,10 @@ require_once("../../../InitSystem.php");
 						foreach ($records as $row) {
 							echo "<tr>";
 								echo "<td data-label='ID'>" . $row['InvoiceID'] . "</td>";
-								echo "<td data-label='Client'>" . strtoupper($row['ClientSlug']) . "</td>";
+								echo "<td data-label='Client'>" . $row['ClientName'] . "</td>";
 								echo "<td data-label='Invoice Type'>" . $row['InvoiceType'] . "</td>";
 								echo "<td data-label='Date'>" . date("m/d/Y", strtotime($row['InvoiceDate'])) . "</td>";
+								echo "<td data-label='Total'>$" . number_format($row['Inv_Total'], 2) . "</td>";
 								echo "<td data-label='Invoice Status'>" . $row['InvoiceStatus'] . "</td>";
 								echo "<td data-label='Payment Status'>";
 									if($row['PaymentStatus'] != "Paid Full"){

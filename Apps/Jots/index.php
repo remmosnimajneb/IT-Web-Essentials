@@ -145,7 +145,7 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 						$Jots = $stm->fetchAll();
 						foreach ($Jots as $Jot) {
 							echo "<tr>";
-								echo "<td data-label='Jot Slug'><a href='" . $SystemPublicURL . "/" . $Jot['JotSlug'] . "'>" . strtoupper($Jot['JotSlug']) . "</a></td>";
+								echo "<td data-label='Jot Slug'><a href='" . GetSysConfig('SystemURL') . "/" . $Jot['JotSlug'] . "'>" . strtoupper($Jot['JotSlug']) . "</a></td>";
 								echo "<td data-label='Jot Type'>" . ucfirst($Jot['JotType']) . "</td>";
 									if($Jot['JotType'] == "link"){
 										echo "<td data-label='Jot Content'><a href='" . $Jot['JotContent'] . "'>" . $Jot['JotContent'] . "</a></td>";

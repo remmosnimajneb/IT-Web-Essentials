@@ -26,7 +26,7 @@ require_once("../../InitSystem.php");
 $Message = "";
 
 /* If a Login attempt was made */
-if(isset($_POST)){
+if(!empty($_POST)){
 
 	//Check Database if a user exists
 	$Login = "SELECT * FROM `ClientUser` WHERE `Email` = '" . EscapeSQLEntry($_POST['Email']) . "' LIMIT 1";

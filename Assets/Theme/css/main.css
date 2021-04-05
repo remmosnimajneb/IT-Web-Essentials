@@ -1,8 +1,25 @@
+/********************************
+* Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
+* Code Version: 2.2
+* Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
+* Company: The Berman Consulting Group - BermanGroup.com
+* Theme Design by: Pixelarity [Pixelarity.com]
+* Licensing Information: https://pixelarity.com/license
+***************************************************************************************/
+
 @import url(font-awesome.min.css);
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,700,300italic,700italic");
 
 
-@media only screen and (max-width: 768px) {
+/*
+* Custom
+*/
+	/* Force input's of Number and date to be black font */
+		input[type="number"], input[type="date"]{
+			color: black!important;
+		}
+
+	@media only screen and (max-width: 768px) {
 		input, select {
 			width: 100%;
 		}
@@ -10,10 +27,12 @@
 			width: 100%;
 		}
 	}
+
 	input[type="checkbox"] + label::before {
 		border: .5px solid white !important;
 	}
-	 /* The Modal (background) */
+
+	/* The Modal (background) */
 	.modal {
 	  display: none; /* Hidden by default */
 	  position: fixed; /* Stay in place */
@@ -77,12 +96,14 @@
 	  to {top: 0; opacity: 1}
 	} 
 
+/* Flex */
 .flex-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: stretch;
 }
+
 @media only screen and (max-width: 768px) {
 	.flex-continer {
 		flex-direction: column;

@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -19,7 +19,7 @@
 
    	/* 2. Check if System has been installed yet */
       if(!file_exists(SYSPATH . '/DatabaseConfig.php')){
-        header('Location: System/Install/Install.php');
+        header('Location: /System/Install/Install.php');
         die();
       }
 
@@ -31,7 +31,7 @@
 			$DatabaseConnection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . "", "" . DB_USER . "", "" . DB_PASSWORD . "");
 			$DatabaseConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(Exception $e) {
-			header('Location: System/Error/CoreError.php?Error=DBConnectError');
+			header('Location: ' . GetSysConfig("SystemURL") . 'System/Error/CoreError.php?Error=DBConnectError');
 			die();
 		}
 
@@ -46,10 +46,6 @@
 			require_once(SYSPATH . '/SystemFunctions.php');
 	
 		/* Run Authentication Checks */
-			/* If it's the Customer Portal */
-			if($AppName == "CustomerPortal"){
-				AuthenticateCustomerPortal($AppletName, $PageSecurityLevel, $_SESSION['ClientPortal_ClientUserID']);
-			} else {
-			/* Otherwise.... */
-				Authenticate($AppName, $PageSecurityLevel, $_SESSION['UserID']);	
-			}
+			Authenticate($AppName, $PageSecurityLevel, $_SESSION['UserID']);
+
+	/* If Authenticate() didn't throw any errors our actual PHP File will chug along as it should and we're all done here! */

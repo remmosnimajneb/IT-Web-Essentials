@@ -1,7 +1,7 @@
 <?php
 /********************************
 * Project: IT Web Essentials - Modular based Portal System for Inventory, Billing, Service Desk and More! 
-* Code Version: 2.0
+* Code Version: 2.2
 * Author: Benjamin Sommer - BenSommer.net | GitHub @remmosnimajneb
 * Company: The Berman Consulting Group - BermanGroup.com
 * Theme Design by: Pixelarity [Pixelarity.com]
@@ -64,7 +64,8 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 				  				C.`PositionTitle`,
 				  				C.`Email`,
 				  				C.`CellPhone`,
-				  				CL.`ClientSlug`
+				  				CL.`ClientSlug`,
+				  				CL.`ClientName`
 				  				FROM 
 				  					`ClientUser` AS C 
 				  						INNER JOIN 
@@ -80,7 +81,7 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 								echo "<td data-label='Position'>" . $Contact['PositionTitle'] . "</td>";
 								echo "<td data-label='Email'>" . $Contact['Email'] . "</td>";
 								echo "<td data-label='Cell Phone'>" . $Contact['CellPhone'] . "</td>";
-								echo "<td data-label='Client'>" . strtoupper($Contact['ClientSlug']) . "</td>";
+								echo "<td data-label='Client'>" . strtoupper($Contact['ClientName']) . "</td>";
 								echo "<td data-label='Edit'><a href='Contact.php?ContactID=" . $Contact['ClientUserID'] . "'>Edit</a></td>";
 							echo "</tr>";
 						}
