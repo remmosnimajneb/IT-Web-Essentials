@@ -14,11 +14,11 @@
 ?>
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Invoice | <?php echo GetSysConfig("SiteTitle"); ?></title>
-		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <head>
+        <title>Invoice | <?php echo GetSysConfig("SiteTitle"); ?></title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-		<style type="text/css">
+        <style type="text/css">
 
             /* Quote Styling */
                 .quote_alert {
@@ -64,7 +64,7 @@
                 }
 
             /* Invoice Styling */
-			#invoice{
+            #invoice{
                 padding: 30px;
             }
 
@@ -233,15 +233,15 @@
             .invoice table .no-bck td{
                 background: #fff;
             }
-		</style>
-	</head>
-	<body>
-		<div id="invoice">
+        </style>
+    </head>
+    <body>
+        <div id="invoice">
 
             <div class="toolbar hidden-print">
                 <div class="text-right">
                     <button id="printInvoice" class="btn btn-info" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
-                    <?php if($IsAdmin){ ?><button class="btn btn-info" onclick="SentToClient(<?php echo $SendToID; ?>, <?php echo $PageName; ?>)"><i class="fa fa-envelope"></i> Email to Client</button>   <?php } ?>
+                    <?php if($IsAdmin){ ?><button class="btn btn-info" onclick="SendToClient(<?php echo $SendToID; ?>, '<?php echo $PageName; ?>')"><i class="fa fa-envelope"></i> Email to Client</button>   <?php } ?>
                 </div>
                 <hr>
             </div>
@@ -256,7 +256,7 @@
                         </a>
                     </div>
                     <div class="col company-details">
-                       	<h2 class="name">
+                        <h2 class="name">
                             <a target="_blank" href="<?php echo GetSysConfig("BrandingCompanyURL"); ?>">
                                 <?php echo GetSysConfig("SiteTitle"); ?>
                             </a>
@@ -267,4 +267,3 @@
                     </div>
                 </div>
             </header>
-        
