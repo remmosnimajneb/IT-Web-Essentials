@@ -49,21 +49,29 @@ require_once(SYSPATH . '/Assets/Views/Header.php');
 				  <tbody>
 				  	<?php
 				  		//Get all Clients
-				  		$sql = "SELECT * FROM `Client`";
-				  		$stm = $DatabaseConnection->prepare($sql);
+				  		$Query = "SELECT * FROM `Client` ORDER BY `ClientName` ASC";
+				  		$stm = $DatabaseConnection->prepare($Query);
 						$stm->execute();
 						$Clients = $stm->fetchAll();
-						foreach ($Clients as $Client) {
-							echo "<tr>";
-								echo "<td data-label='ID'>" . $Client['ClientID'] . "</td>";
-								echo "<td data-label='Client Name'>" . $Client['ClientName'] . "</td>";
-								echo "<td data-label='Slug'>" . strtoupper($Client['ClientSlug']) . "</td>";
-								echo "<td data-label='Address'>" . $Client['StreetName'] . " " . $Client['City'] . ", " . $Client['State'] . " " . $Client['ZIP'] . "</td>";
-								echo "<td data-label='Email'><a href='mailto:" . $Client['Email'] . "'>" . $Client['Email'] . "</a></td>";
-								echo "<td data-label='Phone'><a href='tel:" . $Client['Phone'] . "'>" . $Client['Phone'] . "</a></td>";
-								echo "<td data-label='Edit'><a href='Client.php?Client=" . $Client['ClientID'] . "'>Edit</a></td>";
-								echo "<td data-label='Info'><a href='ClientInfo.php?Client=" . $Client['ClientID'] . "'>Info</a></td>";
-							echo "</tr>";
+						if($stm->rowCount() > 0){
+
+							foreach ($Clients as $Client) {
+								?>
+									<tr>
+										<td data-label='ID'><?php echo $Client['ClientID']; ?></td>
+										<td data-label='Client Name'><?php echo $Client['ClientName']; ?></td>
+										<td data-label='Slug'><?php echo strtoupper($Client['ClientSlug']); ?></td>
+										<td data-label='Addresss'><?php echo $Client['StreetName'] . " " . $Client['City'] . ", " . $Client['State'] . " " . $Client['ZIP']; ?></td>
+										<td data-label='Email'><a href='mailto:<?php echo $Client['Email']; ?>'><?php echo $Client['Email']; ?></a></td>
+										<td data-label='Phone'><a href='tel:<?php echo $Client['Phone']; ?>'><?php echo $Client['Phone']; ?></a></td>
+										<td data-label='Edit'><a href='<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Clients/Client.php?Client=<?php echo $Client['ClientID']; ?>'>Edit</a></td>
+										<td data-label='Info'><a href='<?php echo GetSysConfig("SystemURL"); ?>/Apps/BillingPortal/Clients/ClientInfo.php?Client=<?php echo $Client['ClientID']; ?>'>Info</a></td>
+									</tr>
+								<?php
+							}
+
+						} else {
+							?><p>No Clients found!</p><?php
 						}
 				  	?>
 				  </tbody>
