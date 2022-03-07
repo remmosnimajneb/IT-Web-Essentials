@@ -265,8 +265,8 @@ BEGIN
 
     DECLARE Inv_ClientID INT;
 
-    DECLARE TotalHours INT;
-    DECLARE DNBHours INT;
+    DECLARE TotalHours DOUBLE;
+    DECLARE DNBHours DOUBLE;
 
     DECLARE ExpenseCosts DOUBLE;
 
